@@ -2,8 +2,34 @@
   "version": "3",
   "packages": {
     "specifiers": {
+      "jsr:@std/assert@^0.226.0": "jsr:@std/assert@0.226.0",
+      "jsr:@std/path@^0.225.2": "jsr:@std/path@0.225.2",
+      "jsr:@whyk/utils": "jsr:@whyk/utils@1.7.1",
+      "jsr:@zip-js/zip-js@2.7.51": "jsr:@zip-js/zip-js@2.7.51",
       "npm:@types/node": "npm:@types/node@18.16.19",
+      "npm:encoding-japanese@^2.2.0": "npm:encoding-japanese@2.2.0",
       "npm:quicktype": "npm:quicktype@23.0.80_@types+node@18.16.19"
+    },
+    "jsr": {
+      "@std/assert@0.226.0": {
+        "integrity": "0dfb5f7c7723c18cec118e080fec76ce15b4c31154b15ad2bd74822603ef75b3"
+      },
+      "@std/path@0.225.2": {
+        "integrity": "0f2db41d36b50ef048dcb0399aac720a5348638dd3cb5bf80685bf2a745aa506",
+        "dependencies": [
+          "jsr:@std/assert@^0.226.0"
+        ]
+      },
+      "@whyk/utils@1.7.1": {
+        "integrity": "c1ed1db8970a24845b79f45dbc9bc8ca763e92ddf85ab202475947fa658d94a1",
+        "dependencies": [
+          "jsr:@std/path@^0.225.2",
+          "npm:encoding-japanese@^2.2.0"
+        ]
+      },
+      "@zip-js/zip-js@2.7.51": {
+        "integrity": "7b0f44b85d7e1bbc46f825fb863f11e13a37004f767bcaa8276ee00d39da6759"
+      }
     },
     "npm": {
       "@75lb/deep-merge@1.1.1": {
@@ -218,6 +244,10 @@
       },
       "emoji-regex@8.0.0": {
         "integrity": "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==",
+        "dependencies": {}
+      },
+      "encoding-japanese@2.2.0": {
+        "integrity": "sha512-EuJWwlHPZ1LbADuKTClvHtwbaFn4rOD+dRAbWysqEOXRc2Uui0hJInNJrsdH0c+OhJA4nrCBdSkW4DD5YxAo6A==",
         "dependencies": {}
       },
       "escalade@3.1.1": {

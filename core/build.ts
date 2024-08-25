@@ -1,4 +1,11 @@
-import { Buffer, compress } from "../deps.ts";
+import {
+  Buffer,
+  getFileList,
+  readFile,
+  TextReader,
+  Uint8ArrayWriter,
+  ZipWriter,
+} from "../deps.ts";
 import { imeConfig } from "./config.ts";
 import type { ImeType } from "../model.ts";
 
@@ -28,7 +35,18 @@ export const compressFile = async (
   filePath: string,
   archivePath: string,
 ): Promise<void> => {
-  await compress(filePath, archivePath);
+  const fileList = await getFileList(filePath);
+  console.log({ fileList });
+
+  const uintWriter = new Uint8ArrayWriter();
+  const zipWriter = new ZipWriter(uintWriter);
+  for await (const file of fileList) {
+    const data = await readFile(file.path);
+    await zipWriter.add(file.name, new TextReader(data));
+  }
+  const zipData = await zipWriter.close();
+  // FIXME: 出力されたMicrosoft IMEのデータが文字化けしている
+  await Deno.writeFile(`${archivePath}.zip`, zipData);
 };
 
 /** ファイル出力ログを生成 */
