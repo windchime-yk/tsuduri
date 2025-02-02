@@ -1,4 +1,4 @@
-import { parse } from "../deps.ts";
+import { parse } from "@std/csv";
 import { detectDelimiter, detectWordclass } from "./validation.ts";
 import { imeConfig, NEW_LINE, wordclassMapping } from "./config.ts";
 import type {

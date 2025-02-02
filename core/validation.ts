@@ -1,4 +1,5 @@
-import { extname, z } from "../deps.ts";
+import { z } from "zod";
+import { extname } from "@std/path";
 import type {
   ImeConfig,
   ImeType,

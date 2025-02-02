@@ -1,4 +1,7 @@
-import { ensureDir, join, parseArgs, walk } from "./deps.ts";
+import { parseArgs } from "@std/cli";
+import { join } from "@std/path";
+import { ensureDir, walk } from "@std/fs";
+import { compress } from "./core/compress.ts";
 import { isValidFileExtention, isValidJson } from "./core/validation.ts";
 import {
   convertJsonToTextData,
