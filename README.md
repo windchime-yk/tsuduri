@@ -1,6 +1,6 @@
-# bId
-[![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/bid/mod.ts)
-[![codecov](https://codecov.io/github/windchime-yk/bid/graph/badge.svg?token=CVL3AFDJQQ)](https://codecov.io/github/windchime-yk/bid)
+# Tsuduri
+[![deno doc](https://jsr.io/badges/@whyk/tsuduri)](https://jsr.io/@whyk/tsuduri/doc)
+[![codecov](https://codecov.io/github/windchime-yk/tsuduri/graph/badge.svg?token=CVL3AFDJQQ)](https://codecov.io/github/windchime-yk/tsuduri)
 
 Denoで作られた、IMEユーザー辞書統一出力ツール。  
 すべてのIMEユーザー辞書を一つのファイルから作成することを目標にしています。
@@ -29,7 +29,7 @@ Denoで作られた、IMEユーザー辞書統一出力ツール。
 
 ## インストール方法
 ``` bash
-deno install --allow-read --allow-write --allow-run -n bid https://deno.land/x/bid/cli.ts
+deno install -g --RWE --allow-run -n tsuduri https://jsr.io/@whyk/tsuduri/cli
 ```
 
 ## 対応ファイル形式
@@ -44,17 +44,17 @@ deno install --allow-read --allow-write --allow-run -n bid https://deno.land/x/b
 ## 使用方法
 ### すべての対応IMEユーザー辞書を出力
 ``` bash
-bid --dir=example/input/raw --all
+tsuduri --dir=example/input/raw --all
 ```
 
 ### 特定の対応IMEユーザー辞書を出力
 ``` bash
-bid --dir=example/input/raw --google --macos --microsoft --gboard
+tsuduri --dir=example/input/raw --google --macos --microsoft --gboard
 ```
 
 ### 出力したユーザー辞書ファイル群を圧縮
 ``` bash
-bid --dir=example/input/raw --all --compress
+tsuduri --dir=example/input/raw --all --compress
 ```
 
 ## GitHub Actionsでの設定例
@@ -77,12 +77,12 @@ jobs:
           deno-version: v1.x
       - name: Output dictionary data
         run: |
-          deno install --allow-read --allow-write -n bid https://deno.land/x/bid/cli.ts
-          bid --dir=example/input/raw --all
+          deno install --allow-read --allow-write -n tsuduri https://jsr.io/@whyk/tsuduri/cli
+          tsuduri --dir=example/input/raw --all
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dictionary
-          path: bid_output
+          path: tsuduri_output
           retention-days: 30
 ```

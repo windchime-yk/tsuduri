@@ -1,5 +1,5 @@
 {
-  "$schema": "https://cdn.jsdelivr.net/gh/windchime-yk/bid@v1.0.0/schema.json",
+  "$schema": "https://cdn.jsdelivr.net/gh/windchime-yk/tsuduri@v1.0.0/schema.json",
   "dictionaries": [
     {
       "type": "人名",

@@ -1,6 +1,6 @@
-# bId
-[![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/bid/mod.ts)
-[![codecov](https://codecov.io/github/windchime-yk/bid/graph/badge.svg?token=CVL3AFDJQQ)](https://codecov.io/github/windchime-yk/bid)
+# Tsuduri
+[![deno doc](https://jsr.io/badges/@whyk/tsuduri)](https://jsr.io/@whyk/tsuduri/doc)
+[![codecov](https://codecov.io/github/windchime-yk/tsuduri/graph/badge.svg?token=CVL3AFDJQQ)](https://codecov.io/github/windchime-yk/tsuduri)
 
 build IME dictionary.  
 Created by Deno.
@@ -31,7 +31,7 @@ The goal is to create all IME user dictionaries from a single file.
 
 ## Install
 ``` bash
-deno install --allow-read --allow-write --allow-run -n bid https://deno.land/x/bid/cli.ts
+deno install -RWE --allow-run -n tsuduri https://jsr.io/@whyk/tsuduri/cli
 ```
 
 ## Input File Extensions Support
@@ -44,17 +44,17 @@ Please check `example/input` for details.
 ## Usage
 ### All dictionaries
 ``` bash
-bid --dir=example/input/raw --all
+tsuduri --dir=example/input/raw --all
 ```
 
 ### Specific dictionaries
 ``` bash
-bid --dir=example/input/raw --google --macos --microsoft --gboard
+tsuduri --dir=example/input/raw --google --macos --microsoft --gboard
 ```
 
 ### Compress dictionaries
 ``` bash
-bid --dir=example/input/raw --all --compress
+tsuduri --dir=example/input/raw --all --compress
 ```
 
 ## Build dictionary workflow example
@@ -77,12 +77,12 @@ jobs:
           deno-version: v1.x
       - name: Output dictionary data
         run: |
-          deno install --allow-read --allow-write -n bid https://deno.land/x/bid/cli.ts
-          bid --dir=example/input/raw --all
+          deno install --allow-read --allow-write -n tsuduri https://jsr.io/@whyk/tsuduri/cli
+          tsuduri --dir=example/input/raw --all
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dictionary
-          path: bid_output
+          path: tsuduri_output
           retention-days: 30
 ```

@@ -197,7 +197,7 @@ type MicrosoftImeNativeWordclass =
   | "ら行五段"
   | "一段動詞";
 
-/** bIdで利用可能な品詞名 */
+/** Tsuduriで利用可能な品詞名 */
 export type Wordclass =
   | "普通名詞"
   | "固有名詞"
@@ -241,7 +241,7 @@ export type Wordclass =
  * 品詞マッピングの型定義
  */
 export type WordclassMapping = {
-  /** bIdで利用する品詞 */
+  /** Tsuduriで利用する品詞 */
   [word in Wordclass]: {
     /** 各IMEの対応品詞 */
     "Google IME": GoogleImeNativeWordclass;

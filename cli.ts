@@ -60,7 +60,7 @@ for await (const dirEntry of walk(join(Deno.cwd(), args.dir))) {
     }
 
     const OUTPUT_FILE_PREFIX = dirEntry.name.split(".").at(0)!;
-    const OUTPUT_BASE_DIR_NAME = "bid_output";
+    const OUTPUT_BASE_DIR_NAME = "tsuduri_output";
     const OUTPUT_DIR_NAME = join(OUTPUT_BASE_DIR_NAME, OUTPUT_FILE_PREFIX);
 
     await ensureDir(OUTPUT_DIR_NAME);
@@ -78,5 +78,5 @@ for await (const dirEntry of walk(join(Deno.cwd(), args.dir))) {
 }
 
 if (args.compress) {
-  await compressFile("bid_output", "bid_output_archive");
+  await compress("tsuduri_output", "tsuduri_output_archive");
 }
