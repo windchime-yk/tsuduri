@@ -1,8 +1,8 @@
-type SuccessResult<T> = {
+export type SuccessResult<T> = {
   success: true;
   result: T;
 };
-type ErrorResult = {
+export type ErrorResult = {
   success: false;
   error: Error;
 };

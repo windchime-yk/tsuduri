@@ -6,30 +6,33 @@ import {
 } from "../core/convert.ts";
 import { isValidFileExtention, isValidJson } from "../core/validation.ts";
 import { DataPropertyError, FileTypeError } from "../core/error.ts";
+import { assertResult } from "./common/asserts.ts";
 
 Deno.test("ファイル形式がCSVかJSONかを確認する", async (t) => {
   await t.step("CSV", () => {
-    assertEquals(isValidFileExtention("test/mock.test.csv"), {
+    assertResult(isValidFileExtention("test/mock.test.csv"), {
       success: true,
       result: ".csv",
     });
   });
   await t.step("JSON", () => {
-    assertEquals(isValidFileExtention("test/mock.test.json"), {
+    assertResult(isValidFileExtention("test/mock.test.json"), {
       success: true,
       result: ".json",
     });
   });
   await t.step("それ以外", () => {
-    assertEquals(isValidFileExtention("test/mock.test.yml"), {
+    const error = new FileTypeError("test/mock.test.yml");
+    assertResult(isValidFileExtention("test/mock.test.yml"), {
       success: false,
-      error: new FileTypeError("test/mock.test.yml"),
+      error: { name: error.name, message: error.message },
     });
   });
   await t.step("拡張子なし", () => {
-    assertEquals(isValidFileExtention("test/LICENSE"), {
+    const error = new FileTypeError("test/LICENSE");
+    assertResult(isValidFileExtention("test/LICENSE"), {
       success: false,
-      error: new FileTypeError("test/LICENSE"),
+      error: { name: error.name, message: error.message },
     });
   });
 });
@@ -68,66 +71,40 @@ Deno.test("ユーザーから受け取ったCSVをJSONに変換する", () => {
 
 Deno.test("JSONプロパティが想定されたものか検査する", async (t) => {
   await t.step("想定内", () => {
-    assertEquals(
-      isValidJson([
-        {
-          type: "人名",
-          word: "遊馬賀樋香",
-          reading: "あそまかといか",
-          isSuppress: "NO",
-          isSuggest: "NO",
-          description: "なんとなく思いついた名前",
-        },
-        {
-          type: "姓",
-          word: "遊馬賀",
-          reading: "あそまか",
-          isSuppress: "NO",
-          isSuggest: "NO",
-          description: "なんとなく思いついた名前",
-        },
-        {
-          type: "名",
-          word: "樋香",
-          reading: "といか",
-          isSuppress: "NO",
-          isSuggest: "NO",
-          description: "なんとなく思いついた名前",
-        },
-      ]),
+    const VALID_JSON = [
       {
-        success: true,
-        result: [
-          {
-            type: "人名",
-            word: "遊馬賀樋香",
-            reading: "あそまかといか",
-            isSuppress: "NO",
-            isSuggest: "NO",
-            description: "なんとなく思いついた名前",
-          },
-          {
-            type: "姓",
-            word: "遊馬賀",
-            reading: "あそまか",
-            isSuppress: "NO",
-            isSuggest: "NO",
-            description: "なんとなく思いついた名前",
-          },
-          {
-            type: "名",
-            word: "樋香",
-            reading: "といか",
-            isSuppress: "NO",
-            isSuggest: "NO",
-            description: "なんとなく思いついた名前",
-          },
-        ],
+        type: "人名",
+        word: "遊馬賀樋香",
+        reading: "あそまかといか",
+        isSuppress: "NO",
+        isSuggest: "NO",
+        description: "なんとなく思いついた名前",
       },
-    );
+      {
+        type: "姓",
+        word: "遊馬賀",
+        reading: "あそまか",
+        isSuppress: "NO",
+        isSuggest: "NO",
+        description: "なんとなく思いついた名前",
+      },
+      {
+        type: "名",
+        word: "樋香",
+        reading: "といか",
+        isSuppress: "NO",
+        isSuggest: "NO",
+        description: "なんとなく思いついた名前",
+      },
+    ];
+    assertResult(isValidJson(VALID_JSON), {
+      success: true,
+      result: VALID_JSON,
+    });
   });
   await t.step("想定外", () => {
-    assertEquals(
+    const error = new DataPropertyError();
+    assertResult(
       isValidJson([
         {
           type: "人名",
@@ -151,7 +128,7 @@ Deno.test("JSONプロパティが想定されたものか検査する", async (t
       ]),
       {
         success: false,
-        error: new DataPropertyError(),
+        error: { name: error.name, message: error.message },
       },
     );
   });
