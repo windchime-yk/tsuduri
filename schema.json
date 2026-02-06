@@ -1,16 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
-    "YesOrNo": {
-      "title": "YesOrNo",
-      "enum": [
-        "NO",
-        "YES"
-      ],
-      "type": "string"
-    },
     "Wordclass": {
-      "title": "Wordclass",
+      "description": "Tsuduriで利用可能な品詞名",
       "enum": [
         "カ行五段動詞",
         "ガ行五段動詞",
@@ -52,106 +44,60 @@
       ],
       "type": "string"
     },
-    "InputUserDictionary": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "$ref": "#/definitions/Wordclass",
-          "description": "品詞",
-          "title": "type"
-        },
-        "word": {
-          "description": "対象文言",
-          "type": "string",
-          "title": "word"
-        },
-        "reading": {
-          "description": "読み方",
-          "type": "string",
-          "title": "reading"
-        },
-        "isSuppress": {
-          "$ref": "#/definitions/YesOrNo",
-          "description": "抑制単語かどうか",
-          "title": "isSuppress"
-        },
-        "isSuggest": {
-          "$ref": "#/definitions/YesOrNo",
-          "description": "サジェストのみに表示するかどうか",
-          "title": "isSuggest"
-        },
-        "description": {
-          "description": "対象文言についての説明",
-          "type": "string",
-          "title": "description"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "description",
-        "isSuggest",
-        "isSuppress",
-        "reading",
-        "type",
-        "word"
-      ]
-    },
-    "Schema": {
-      "type": "object",
-      "properties": {
-        "dictionaries": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "$ref": "#/definitions/Wordclass",
-                "description": "品詞",
-                "title": "type"
-              },
-              "word": {
-                "description": "対象文言",
-                "type": "string",
-                "title": "word"
-              },
-              "reading": {
-                "description": "読み方",
-                "type": "string",
-                "title": "reading"
-              },
-              "isSuppress": {
-                "$ref": "#/definitions/YesOrNo",
-                "description": "抑制単語かどうか",
-                "title": "isSuppress"
-              },
-              "isSuggest": {
-                "$ref": "#/definitions/YesOrNo",
-                "description": "サジェストのみに表示するかどうか",
-                "title": "isSuggest"
-              },
-              "description": {
-                "description": "対象文言についての説明",
-                "type": "string",
-                "title": "description"
-              }
-            },
-            "additionalProperties": false,
-            "required": [
-              "description",
-              "isSuggest",
-              "isSuppress",
-              "reading",
-              "type",
-              "word"
-            ]
-          },
-          "title": "dictionaries"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "dictionaries"
-      ]
+    "YesOrNo": {
+      "description": "YESかNOか",
+      "enum": [
+        "NO",
+        "YES"
+      ],
+      "type": "string"
     }
-  }
+  },
+  "properties": {
+    "dictionaries": {
+      "items": {
+        "description": "入力されるユーザー辞書の型定義",
+        "properties": {
+          "description": {
+            "description": "対象文言についての説明",
+            "type": "string"
+          },
+          "isSuggest": {
+            "$ref": "#/definitions/YesOrNo",
+            "description": "サジェストのみに表示するかどうか"
+          },
+          "isSuppress": {
+            "$ref": "#/definitions/YesOrNo",
+            "description": "抑制単語かどうか"
+          },
+          "reading": {
+            "description": "読み方",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/definitions/Wordclass",
+            "description": "品詞"
+          },
+          "word": {
+            "description": "対象文言",
+            "type": "string"
+          }
+        },
+        "required": [
+          "description",
+          "isSuggest",
+          "isSuppress",
+          "reading",
+          "type",
+          "word"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "dictionaries"
+  ],
+  "type": "object"
 }

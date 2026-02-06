@@ -249,3 +249,7 @@ export type WordclassMapping = {
     "Microsoft IME": MicrosoftImeNativeWordclass;
   };
 };
+
+export type Schema = {
+  dictionaries: InputUserDictionary[];
+};
