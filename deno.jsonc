@@ -13,6 +13,8 @@
     "@std/csv": "jsr:@std/csv@^1.0.5",
     "@std/fs": "jsr:@std/fs@^1.0.11",
     "@std/path": "jsr:@std/path@^1.0.8",
+    "@whyk/utils": "jsr:@whyk/utils@^1.7.1",
+    "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.8.17",
     "typescript-json-schema": "npm:typescript-json-schema@^0.67.1",
     "zod": "npm:zod@^3.24.1"
   }
