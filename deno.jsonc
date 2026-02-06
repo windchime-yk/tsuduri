@@ -1,7 +1,7 @@
 {
   "tasks": {
     "build": "deno run -RW --allow-run cli.ts",
-    "generate": "deno run -RWE npm:quicktype@23.0.171 dictionary.model.ts -o schema.json --lang schema",
+    "generate": "deno run -RWE typescript-json-schema --required model.ts Schema -o schema.json",
     "test": "deno test -R --coverage=coverage",
     "coverage": "deno coverage coverage",
     "coverage:output": "deno coverage coverage --lcov --output=coverage.lcov"
@@ -13,6 +13,7 @@
     "@std/csv": "jsr:@std/csv@^1.0.5",
     "@std/fs": "jsr:@std/fs@^1.0.11",
     "@std/path": "jsr:@std/path@^1.0.8",
+    "typescript-json-schema": "npm:typescript-json-schema@^0.67.1",
     "zod": "npm:zod@^3.24.1"
   }
 }
