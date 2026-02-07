@@ -1,14 +1,13 @@
 import { parseArgs } from "@std/cli";
 import { join } from "@std/path";
 import { ensureDir, walk } from "@std/fs";
-import { compress } from "./core/compress.ts";
 import { isValidFileExtention, isValidJson } from "./core/validation.ts";
 import {
   convertJsonToTextData,
   parsedCsvToJson,
   readFile,
 } from "./core/convert.ts";
-import { generateDictionaryFile } from "./core/build.ts";
+import { compressFile, generateDictionaryFile } from "./core/build.ts";
 import { CliError } from "./core/error.ts";
 import type { ImeType } from "./model.ts";
 
@@ -78,5 +77,5 @@ for await (const dirEntry of walk(join(Deno.cwd(), args.dir))) {
 }
 
 if (args.compress) {
-  await compress("tsuduri_output", "tsuduri_output_archive");
+  await compressFile("tsuduri_output", "tsuduri_output_archive");
 }
