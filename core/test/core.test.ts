@@ -1,4 +1,5 @@
 import { assertEquals } from "@std/assert";
+import { join } from "@std/path";
 import {
   convertJsonToTextData,
   parsedCsvToJson,
@@ -7,6 +8,8 @@ import {
 import { isValidFileExtention, isValidJson } from "../validation.ts";
 import { DataPropertyError, FileTypeError } from "../error.ts";
 import { assertResult } from "./common/asserts.ts";
+
+const testDir = import.meta.dirname!;
 
 Deno.test("ファイル形式がCSVかJSONかを確認する", async (t) => {
   await t.step("CSV", () => {
@@ -295,7 +298,7 @@ Deno.test("IMEごとのユーザー辞書データに変換", async (t) => {
 
 Deno.test("ファイル読み込み", async () => {
   assertEquals(
-    await readFile("core/test/mock/private.csv"),
+    await readFile(join(testDir, "mock/private.csv")),
     "type,word,reading,isSuppress,isSuggest,description\n人名,遊馬賀樋香,あそまかといか,NO,NO,なんとなく思いついた名前\n姓,遊馬賀,あそまか,NO,NO,なんとなく思いついた名前\n名,樋香,といか,NO,NO,なんとなく思いついた名前",
   );
 });
