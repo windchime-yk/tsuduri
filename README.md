@@ -1,5 +1,5 @@
 # Tsuduri
-[![deno doc](https://jsr.io/badges/@whyk/tsuduri)](https://jsr.io/@whyk/tsuduri/doc)
+[![deno doc](https://jsr.io/badges/@tsuduri/core)](https://jsr.io/@tsuduri/core/doc)
 [![codecov](https://codecov.io/github/windchime-yk/tsuduri/graph/badge.svg?token=CVL3AFDJQQ)](https://codecov.io/github/windchime-yk/tsuduri)
 
 Denoで作られた、IMEユーザー辞書統一出力ツール。  
@@ -29,7 +29,7 @@ Denoで作られた、IMEユーザー辞書統一出力ツール。
 
 ## インストール方法
 ``` bash
-deno install -g --RWE --allow-run -n tsuduri https://jsr.io/@whyk/tsuduri/cli
+deno install -g -RWE --allow-run -n tsuduri jsr:@tsuduri/cli
 ```
 
 ## 対応ファイル形式
@@ -72,12 +72,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup Deno
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@v2
         with:
-          deno-version: v1.x
+          deno-version: v2.x
       - name: Output dictionary data
         run: |
-          deno install --allow-read --allow-write -n tsuduri https://jsr.io/@whyk/tsuduri/cli
+          deno install -g -RWE --allow-run -n tsuduri jsr:@tsuduri/cli
           tsuduri --dir=example/input/raw --all
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
