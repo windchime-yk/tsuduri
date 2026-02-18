@@ -28,4 +28,6 @@ jobs:
           echo "name=${PACKAGE}" >> "$GITHUB_OUTPUT"
 
       - name: Publish
-        run: deno publish --config ${{ steps.pkg.outputs.name }}/deno.jsonc
+        env:
+          PACKAGE: ${{ steps.pkg.outputs.name }}
+        run: deno publish --config "${PACKAGE}/deno.jsonc"

@@ -9,6 +9,7 @@ permissions:
 jobs:
   bump:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,9 +30,9 @@ jobs:
 
           detect_release_kind() {
             local commits="$1"
-            if echo "$commits" | grep -qE '(^|\n)[a-z]+(\(.+\))?!:|BREAKING CHANGE'; then
+            if echo "$commits" | grep -qE '^[a-z]+(\(.+\))?!:|BREAKING CHANGE'; then
               echo "major"
-            elif echo "$commits" | grep -qE '(^|\n)feat(\(.+\))?:'; then
+            elif echo "$commits" | grep -qE '^feat(\(.+\))?:'; then
               echo "minor"
             else
               echo "patch"
