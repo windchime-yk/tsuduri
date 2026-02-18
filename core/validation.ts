@@ -77,6 +77,8 @@ export const detectWordclass = (
  * @param type 対象IMEのデータタイプ
  * @returns カンマかタブ
  */
-export const detectDelimiter = (type: ImeConfig[ImeType]["dataType"]): string => {
+export const detectDelimiter = (
+  type: ImeConfig[ImeType]["dataType"],
+): string => {
   return type === "CSV" ? COMMA : TAB;
 };

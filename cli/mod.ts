@@ -6,11 +6,11 @@ import {
   compressFile,
   convertJsonToTextData,
   generateDictionaryFile,
+  type ImeType,
   isValidFileExtention,
   isValidJson,
   parsedCsvToJson,
   readFile,
-  type ImeType
 } from "@tsuduri/core";
 
 const args = parseArgs(Deno.args, {
