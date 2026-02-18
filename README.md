@@ -1,5 +1,6 @@
 # Tsuduri
 [![deno doc](https://jsr.io/badges/@tsuduri/core)](https://jsr.io/@tsuduri/core/doc)
+[![deno doc](https://jsr.io/badges/@tsuduri/cli)](https://jsr.io/@tsuduri/cli/doc)
 [![codecov](https://codecov.io/github/windchime-yk/tsuduri/graph/badge.svg?token=CVL3AFDJQQ)](https://codecov.io/github/windchime-yk/tsuduri)
 
 Denoで作られた、IMEユーザー辞書統一出力ツール。  
