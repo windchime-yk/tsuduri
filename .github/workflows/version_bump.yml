@@ -1,0 +1,105 @@
+name: Version bump
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed packages and bump versions
+        id: bump
+        run: |
+          bump_version() {
+            local version=$1 kind=$2
+            IFS='.' read -r major minor patch <<< "$version"
+            case $kind in
+              major) echo "$((major+1)).0.0" ;;
+              minor) echo "${major}.$((minor+1)).0" ;;
+              patch) echo "${major}.${minor}.$((patch+1))" ;;
+            esac
+          }
+
+          detect_release_kind() {
+            local commits="$1"
+            if echo "$commits" | grep -qE '(^|\n)[a-z]+(\(.+\))?!:|BREAKING CHANGE'; then
+              echo "major"
+            elif echo "$commits" | grep -qE '(^|\n)feat(\(.+\))?:'; then
+              echo "minor"
+            else
+              echo "patch"
+            fi
+          }
+
+          PACKAGES=("core" "cli")
+          BUMPED_TAGS=()
+
+          for pkg in "${PACKAGES[@]}"; do
+            LATEST_TAG=$(git tag -l "${pkg}@*" | sort -V | tail -n1)
+
+            if [ -z "$LATEST_TAG" ]; then
+              DIFF_OUTPUT=$(git log --oneline -- "${pkg}/")
+            else
+              DIFF_OUTPUT=$(git diff --name-only "${LATEST_TAG}..HEAD" -- "${pkg}/")
+            fi
+
+            if [ -z "$DIFF_OUTPUT" ]; then
+              echo "No changes in ${pkg}, skipping."
+              continue
+            fi
+
+            echo "Changes detected in ${pkg}."
+
+            if [ -z "$LATEST_TAG" ]; then
+              COMMITS=$(git log --pretty=format:"%s" -- "${pkg}/")
+            else
+              COMMITS=$(git log --pretty=format:"%s" "${LATEST_TAG}..HEAD" -- "${pkg}/")
+            fi
+
+            KIND=$(detect_release_kind "$COMMITS")
+            echo "Release kind for ${pkg}: ${KIND}"
+
+            CURRENT_VERSION=$(grep -o '"version": *"[^"]*"' "${pkg}/deno.jsonc" | head -1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+            NEW_VERSION=$(bump_version "$CURRENT_VERSION" "$KIND")
+            echo "Bumping ${pkg}: ${CURRENT_VERSION} -> ${NEW_VERSION}"
+
+            sed -i "s/\"version\": *\"${CURRENT_VERSION}\"/\"version\": \"${NEW_VERSION}\"/" "${pkg}/deno.jsonc"
+
+            BUMPED_TAGS+=("${pkg}@${NEW_VERSION}")
+          done
+
+          if [ ${#BUMPED_TAGS[@]} -eq 0 ]; then
+            echo "No packages to bump."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+          TAGS_JSON=$(printf '%s\n' "${BUMPED_TAGS[@]}" | jq -R . | jq -s -c .)
+          echo "tags=${TAGS_JSON}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.bump.outputs.has_changes == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: bump package versions"
+          git push
+
+      - name: Create and push tags
+        if: steps.bump.outputs.has_changes == 'true'
+        run: |
+          TAGS='${{ steps.bump.outputs.tags }}'
+          for tag in $(echo "$TAGS" | jq -r '.[]'); do
+            git tag "$tag"
+            git push origin "$tag"
+          done
