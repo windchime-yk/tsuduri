@@ -5,7 +5,7 @@ import type {
   ImeType,
   InputUserDictionary,
   OutputUserDictionary,
-} from "../model.ts";
+} from "./model.ts";
 
 /**
  * CSVからJSONに変換する

@@ -1,15 +1,17 @@
 import { parseArgs } from "@std/cli";
 import { join } from "@std/path";
 import { ensureDir, walk } from "@std/fs";
-import { isValidFileExtention, isValidJson } from "./core/validation.ts";
 import {
+  CliError,
+  compressFile,
   convertJsonToTextData,
+  generateDictionaryFile,
+  isValidFileExtention,
+  isValidJson,
   parsedCsvToJson,
   readFile,
-} from "./core/convert.ts";
-import { compressFile, generateDictionaryFile } from "./core/build.ts";
-import { CliError } from "./core/error.ts";
-import type { ImeType } from "./model.ts";
+  type ImeType
+} from "@tsuduri/core";
 
 const args = parseArgs(Deno.args, {
   boolean: ["all", "google", "macos", "microsoft", "gboard", "compress"],

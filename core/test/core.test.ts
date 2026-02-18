@@ -3,9 +3,9 @@ import {
   convertJsonToTextData,
   parsedCsvToJson,
   readFile,
-} from "../core/convert.ts";
-import { isValidFileExtention, isValidJson } from "../core/validation.ts";
-import { DataPropertyError, FileTypeError } from "../core/error.ts";
+} from "../convert.ts";
+import { isValidFileExtention, isValidJson } from "../validation.ts";
+import { DataPropertyError, FileTypeError } from "../error.ts";
 import { assertResult } from "./common/asserts.ts";
 
 Deno.test("ファイル形式がCSVかJSONかを確認する", async (t) => {
@@ -295,7 +295,7 @@ Deno.test("IMEごとのユーザー辞書データに変換", async (t) => {
 
 Deno.test("ファイル読み込み", async () => {
   assertEquals(
-    await readFile("test/mock/private.csv"),
+    await readFile("core/test/mock/private.csv"),
     "type,word,reading,isSuppress,isSuggest,description\n人名,遊馬賀樋香,あそまかといか,NO,NO,なんとなく思いついた名前\n姓,遊馬賀,あそまか,NO,NO,なんとなく思いついた名前\n名,樋香,といか,NO,NO,なんとなく思いついた名前",
   );
 });

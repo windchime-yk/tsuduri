@@ -1,4 +1,4 @@
-import type { ImeConfig, WordclassMapping } from "../model.ts";
+import type { ImeConfig, WordclassMapping } from "./model.ts";
 
 export const TAB = "\t";
 export const COMMA = ",";

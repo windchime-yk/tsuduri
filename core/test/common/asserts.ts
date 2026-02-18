@@ -1,5 +1,5 @@
 import { assertEquals, assertInstanceOf } from "@std/assert";
-import { Result, SuccessResult as SuccessAssertResult } from "../../model.ts";
+import type { Result, SuccessResult as SuccessAssertResult } from "../../model.ts";
 
 type ErrorAssertResult = {
   success: false;
