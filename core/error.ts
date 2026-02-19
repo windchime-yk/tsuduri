@@ -22,8 +22,3 @@ export class DataPropertyError extends BaseError {
   }
 }
 
-export class CliError extends BaseError {
-  constructor(message: string) {
-    super(message);
-  }
-}

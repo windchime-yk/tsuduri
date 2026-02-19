@@ -26,4 +26,4 @@ export { compressFile, generateDictionaryFile } from "./build.ts";
 
 export { COMMA, imeConfig, NEW_LINE, TAB, wordclassMapping } from "./config.ts";
 
-export { CliError, DataPropertyError, FileTypeError } from "./error.ts";
+export { DataPropertyError, FileTypeError } from "./error.ts";
