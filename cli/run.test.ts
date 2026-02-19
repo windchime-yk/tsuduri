@@ -2,8 +2,7 @@ import { afterAll, describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { join } from "@std/path";
 import { exists } from "@std/fs";
-// deno-lint-ignore no-import-prefix -- Web Worker使用時にタイマーによるリークが発生するため、直インポートを許容
-import { configure } from "jsr:@zip-js/zip-js@^2.8.17";
+import { configure } from "@zip-js/zip-js";
 import { CliError } from "./error.ts";
 import { DataPropertyError, FileTypeError } from "@tsuduri/core";
 import { run } from "./run.ts";
