@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "exports": "./mod.ts",
   "tasks": {
-    "test": "deno test -RW --allow-run --coverage=coverage"
+    "test": "deno test -RW --allow-run --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/cli/' coverage"
   },
   "imports": {
     "@std/cli": "jsr:@std/cli@^1.0.12",
