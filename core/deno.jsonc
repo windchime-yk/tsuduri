@@ -2,7 +2,8 @@
   "name": "@tsuduri/core",
   "version": "0.0.1",
   "tasks": {
-    "test": "deno test -R --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/core/' coverage"
+    "test": "deno test -R --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/core/' coverage",
+    "generate": "deno run -RWE typescript-json-schema --required model.ts Schema -o schema.json"
   },
   "exports": "./mod.ts",
   "imports": {
