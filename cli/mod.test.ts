@@ -2,7 +2,7 @@ import { assertEquals, assertNotEquals } from "@std/assert";
 import { join } from "@std/path";
 import { exists } from "@std/fs";
 
-const rootDir = join(import.meta.dirname!, "..", "..");
+const rootDir = join(import.meta.dirname!, "..");
 const CLI_PATH = join(rootDir, "cli", "mod.ts");
 const MOCK_DIR = "core/test/mock";
 const OUTPUT_DIR = join(rootDir, "tsuduri_output");

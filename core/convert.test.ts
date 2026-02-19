@@ -4,41 +4,9 @@ import {
   convertJsonToTextData,
   parsedCsvToJson,
   readFile,
-} from "../convert.ts";
-import { isValidFileExtention, isValidJson } from "../validation.ts";
-import { DataPropertyError, FileTypeError } from "../error.ts";
-import { assertResult } from "./common/asserts.ts";
+} from "./convert.ts";
 
 const testDir = import.meta.dirname!;
-
-Deno.test("ファイル形式がCSVかJSONかを確認する", async (t) => {
-  await t.step("CSV", () => {
-    assertResult(isValidFileExtention("test/mock.test.csv"), {
-      success: true,
-      result: ".csv",
-    });
-  });
-  await t.step("JSON", () => {
-    assertResult(isValidFileExtention("test/mock.test.json"), {
-      success: true,
-      result: ".json",
-    });
-  });
-  await t.step("それ以外", () => {
-    const error = new FileTypeError("test/mock.test.yml");
-    assertResult(isValidFileExtention("test/mock.test.yml"), {
-      success: false,
-      error: { name: error.name, message: error.message },
-    });
-  });
-  await t.step("拡張子なし", () => {
-    const error = new FileTypeError("test/LICENSE");
-    assertResult(isValidFileExtention("test/LICENSE"), {
-      success: false,
-      error: { name: error.name, message: error.message },
-    });
-  });
-});
 
 Deno.test("ユーザーから受け取ったCSVをJSONに変換する", () => {
   const VALID_CSV =
@@ -70,71 +38,6 @@ Deno.test("ユーザーから受け取ったCSVをJSONに変換する", () => {
       description: "なんとなく思いついた名前",
     },
   ]);
-});
-
-Deno.test("JSONプロパティが想定されたものか検査する", async (t) => {
-  await t.step("想定内", () => {
-    const VALID_JSON = [
-      {
-        type: "人名",
-        word: "遊馬賀樋香",
-        reading: "あそまかといか",
-        isSuppress: "NO",
-        isSuggest: "NO",
-        description: "なんとなく思いついた名前",
-      },
-      {
-        type: "姓",
-        word: "遊馬賀",
-        reading: "あそまか",
-        isSuppress: "NO",
-        isSuggest: "NO",
-        description: "なんとなく思いついた名前",
-      },
-      {
-        type: "名",
-        word: "樋香",
-        reading: "といか",
-        isSuppress: "NO",
-        isSuggest: "NO",
-        description: "なんとなく思いついた名前",
-      },
-    ];
-    assertResult(isValidJson(VALID_JSON), {
-      success: true,
-      result: VALID_JSON,
-    });
-  });
-  await t.step("想定外", () => {
-    const error = new DataPropertyError();
-    assertResult(
-      isValidJson([
-        {
-          type: "人名",
-          word: "遊馬賀樋香",
-          read: "あそまかといか",
-          isSuppress: "NO",
-          isSuggest: "NO",
-          description: "なんとなく思いついた名前",
-        },
-        {
-          type: "姓",
-          word: "遊馬賀",
-          reading: "あそまか",
-        },
-        {
-          type: "名",
-          word: "樋香",
-          reading: "といか",
-          isSuppress: "NO",
-        },
-      ]),
-      {
-        success: false,
-        error: { name: error.name, message: error.message },
-      },
-    );
-  });
 });
 
 Deno.test("IMEごとのユーザー辞書データに変換", async (t) => {
@@ -298,7 +201,7 @@ Deno.test("IMEごとのユーザー辞書データに変換", async (t) => {
 
 Deno.test("ファイル読み込み", async () => {
   assertEquals(
-    await readFile(join(testDir, "mock/private.csv")),
+    await readFile(join(testDir, "test/mock/private.csv")),
     "type,word,reading,isSuppress,isSuggest,description\n人名,遊馬賀樋香,あそまかといか,NO,NO,なんとなく思いついた名前\n姓,遊馬賀,あそまか,NO,NO,なんとなく思いついた名前\n名,樋香,といか,NO,NO,なんとなく思いついた名前",
   );
 });
