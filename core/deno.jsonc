@@ -2,7 +2,7 @@
   "name": "@tsuduri/core",
   "version": "0.0.1",
   "tasks": {
-    "test": "deno test -R --coverage=coverage"
+    "test": "deno test -R --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/core/' coverage"
   },
   "exports": "./mod.ts",
   "imports": {
