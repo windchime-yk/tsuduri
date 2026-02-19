@@ -43,8 +43,11 @@ describe("CLI", () => {
   it("--google指定でCSVから辞書ファイルを生成する", async () => {
     const { code } = await runCli(["--dir", MOCK_DIR, "--google"]);
     expect(code).toBe(0);
-    expect(await exists(join(OUTPUT_DIR, "private/private-googleime.txt"))).toBe(true);
-    expect(await exists(join(OUTPUT_DIR, "public/public-googleime.txt"))).toBe(true);
+    expect(await exists(join(OUTPUT_DIR, "private/private-googleime.txt")))
+      .toBe(true);
+    expect(await exists(join(OUTPUT_DIR, "public/public-googleime.txt"))).toBe(
+      true,
+    );
   });
 
   it("--all指定で全IMEの辞書ファイルを生成する", async () => {

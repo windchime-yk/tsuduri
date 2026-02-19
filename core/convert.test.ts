@@ -1,11 +1,7 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { join } from "@std/path";
-import {
-  convertJsonToTextData,
-  parsedCsvToJson,
-  readFile,
-} from "./convert.ts";
+import { convertJsonToTextData, parsedCsvToJson, readFile } from "./convert.ts";
 import type { InputUserDictionary } from "./model.ts";
 
 const testDir = import.meta.dirname!;
