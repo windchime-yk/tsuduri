@@ -21,4 +21,3 @@ export class DataPropertyError extends BaseError {
     super(`想定していないプロパティが存在します。データを再確認してください`);
   }
 }
-
