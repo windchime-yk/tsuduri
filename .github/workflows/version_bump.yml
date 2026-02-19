@@ -98,8 +98,9 @@ jobs:
 
       - name: Create and push tags
         if: steps.bump.outputs.has_changes == 'true'
+        env:
+          TAGS: ${{ steps.bump.outputs.tags }}
         run: |
-          TAGS='${{ steps.bump.outputs.tags }}'
           for tag in $(echo "$TAGS" | jq -r '.[]'); do
             git tag "$tag"
             git push origin "$tag"
