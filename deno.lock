@@ -22,6 +22,7 @@
     "jsr:@std/testing@*": "1.0.17",
     "jsr:@std/testing@1": "1.0.17",
     "jsr:@whyk/utils@^1.7.1": "1.7.1",
+    "jsr:@zip-js/zip-js@*": "2.8.17",
     "jsr:@zip-js/zip-js@^2.8.17": "2.8.17",
     "npm:@clack/prompts@0.7": "0.7.0",
     "npm:encoding-japanese@^2.2.0": "2.2.0",
