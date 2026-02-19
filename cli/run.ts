@@ -77,9 +77,12 @@ export const run = async (
       for await (const imeType of imeTypeList) {
         await generateDictionaryFile(
           convertJsonToTextData(isValidJsonResult.result, imeType),
-          `${OUTPUT_DIR_NAME}/${OUTPUT_FILE_PREFIX}-${
-            imeType.toLowerCase().replace(" ", "")
-          }.txt`,
+          join(
+            OUTPUT_DIR_NAME,
+            `${OUTPUT_FILE_PREFIX}-${
+              imeType.toLowerCase().replace(" ", "")
+            }.txt`,
+          ),
           imeType,
         );
       }
