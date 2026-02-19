@@ -6,8 +6,6 @@
   },
   "tasks": {
     "test": "deno task --cwd core test && deno task --cwd cli test",
-    "coverage": "deno coverage coverage",
-    "coverage:output": "deno coverage coverage --lcov --output=coverage.lcov",
     "generate": "cd core && deno run -RWE typescript-json-schema --required model.ts Schema -o schema.json"
   },
   "workspace": ["./core", "./cli"],
