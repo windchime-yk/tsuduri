@@ -1,4 +1,5 @@
-import { assertEquals, assertNotEquals } from "@std/assert";
+import { afterAll, describe, it } from "@std/testing/bdd";
+import { expect } from "@std/expect";
 import { join } from "@std/path";
 import { exists } from "@std/fs";
 
@@ -24,55 +25,37 @@ async function runCli(
   };
 }
 
-Deno.test("CLI", async (t) => {
-  await t.step("--dir未指定でエラー終了する", async () => {
+describe("CLI", () => {
+  afterAll(async () => {
+    await Deno.remove(OUTPUT_DIR, { recursive: true });
+  });
+
+  it("--dir未指定でエラー終了する", async () => {
     const { code } = await runCli([]);
-    assertNotEquals(code, 0);
+    expect(code).not.toBe(0);
   });
 
-  await t.step("IME未指定でエラー終了する", async () => {
+  it("IME未指定でエラー終了する", async () => {
     const { code } = await runCli(["--dir", MOCK_DIR]);
-    assertNotEquals(code, 0);
+    expect(code).not.toBe(0);
   });
 
-  await t.step("--google指定でCSVから辞書ファイルを生成する", async () => {
-    const { code } = await runCli([
-      "--dir",
-      MOCK_DIR,
-      "--google",
-    ]);
-    assertEquals(code, 0);
-    assertEquals(
-      await exists(join(OUTPUT_DIR, "private/private-googleime.txt")),
-      true,
-    );
-    assertEquals(
-      await exists(join(OUTPUT_DIR, "public/public-googleime.txt")),
-      true,
-    );
+  it("--google指定でCSVから辞書ファイルを生成する", async () => {
+    const { code } = await runCli(["--dir", MOCK_DIR, "--google"]);
+    expect(code).toBe(0);
+    expect(await exists(join(OUTPUT_DIR, "private/private-googleime.txt"))).toBe(true);
+    expect(await exists(join(OUTPUT_DIR, "public/public-googleime.txt"))).toBe(true);
   });
 
-  await t.step("--all指定で全IMEの辞書ファイルを生成する", async () => {
-    const { code } = await runCli([
-      "--dir",
-      MOCK_DIR,
-      "--all",
-    ]);
-    assertEquals(code, 0);
-
+  it("--all指定で全IMEの辞書ファイルを生成する", async () => {
+    const { code } = await runCli(["--dir", MOCK_DIR, "--all"]);
+    expect(code).toBe(0);
     for (const prefix of ["private", "public"]) {
-      for (
-        const ime of ["googleime", "macosime", "microsoftime", "gboard"]
-      ) {
-        assertEquals(
+      for (const ime of ["googleime", "macosime", "microsoftime", "gboard"]) {
+        expect(
           await exists(join(OUTPUT_DIR, `${prefix}/${prefix}-${ime}.txt`)),
-          true,
-          `${prefix}-${ime}.txt が存在しない`,
-        );
+        ).toBe(true);
       }
     }
   });
-
-  // テストで生成した出力ディレクトリを削除
-  await Deno.remove(OUTPUT_DIR, { recursive: true });
 });

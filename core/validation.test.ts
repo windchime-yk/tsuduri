@@ -1,28 +1,29 @@
+import { describe, it } from "@std/testing/bdd";
 import { assertResult } from "./test/common/asserts.ts";
 import { DataPropertyError, FileTypeError } from "./error.ts";
 import { isValidFileExtention, isValidJson } from "./validation.ts";
 
-Deno.test("ファイル形式がCSVかJSONかを確認する", async (t) => {
-  await t.step("CSV", () => {
+describe("ファイル形式がCSVかJSONかを確認する", () => {
+  it("CSVは有効", () => {
     assertResult(isValidFileExtention("test/mock.test.csv"), {
       success: true,
       result: ".csv",
     });
   });
-  await t.step("JSON", () => {
+  it("JSONは有効", () => {
     assertResult(isValidFileExtention("test/mock.test.json"), {
       success: true,
       result: ".json",
     });
   });
-  await t.step("それ以外", () => {
+  it("CSV・JSON以外はエラー", () => {
     const error = new FileTypeError("test/mock.test.yml");
     assertResult(isValidFileExtention("test/mock.test.yml"), {
       success: false,
       error: { name: error.name, message: error.message },
     });
   });
-  await t.step("拡張子なし", () => {
+  it("拡張子なしはエラー", () => {
     const error = new FileTypeError("test/LICENSE");
     assertResult(isValidFileExtention("test/LICENSE"), {
       success: false,
@@ -31,8 +32,8 @@ Deno.test("ファイル形式がCSVかJSONかを確認する", async (t) => {
   });
 });
 
-Deno.test("JSONプロパティが想定されたものか検査する", async (t) => {
-  await t.step("想定内", () => {
+describe("JSONプロパティが想定されたものか検査する", () => {
+  it("想定内のプロパティは有効", () => {
     const VALID_JSON = [
       {
         type: "人名",
@@ -64,7 +65,7 @@ Deno.test("JSONプロパティが想定されたものか検査する", async (t
       result: VALID_JSON,
     });
   });
-  await t.step("想定外", () => {
+  it("想定外のプロパティはエラー", () => {
     const error = new DataPropertyError();
     assertResult(
       isValidJson([

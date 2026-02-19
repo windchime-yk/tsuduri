@@ -3,17 +3,24 @@
   "specifiers": {
     "jsr:@std/assert@0.226": "0.226.0",
     "jsr:@std/assert@^1.0.11": "1.0.17",
+    "jsr:@std/assert@^1.0.14": "1.0.17",
+    "jsr:@std/assert@^1.0.17": "1.0.17",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/cli@^1.0.12": "1.0.26",
     "jsr:@std/csv@^1.0.5": "1.0.6",
+    "jsr:@std/expect@*": "1.0.17",
+    "jsr:@std/expect@1": "1.0.17",
     "jsr:@std/fs@^1.0.11": "1.0.22",
     "jsr:@std/fs@~0.229.3": "0.229.3",
+    "jsr:@std/internal@^1.0.10": "1.0.12",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@1.0.0-rc.1": "1.0.0-rc.1",
     "jsr:@std/path@^1.0.8": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
     "jsr:@std/path@~0.225.2": "0.225.2",
     "jsr:@std/streams@^1.0.9": "1.0.17",
+    "jsr:@std/testing@*": "1.0.17",
+    "jsr:@std/testing@1": "1.0.17",
     "jsr:@whyk/utils@^1.7.1": "1.7.1",
     "jsr:@zip-js/zip-js@^2.8.17": "2.8.17",
     "npm:@clack/prompts@0.7": "0.7.0",
@@ -28,7 +35,7 @@
     "@std/assert@1.0.17": {
       "integrity": "df5ebfffe77c03b3fa1401e11c762cc8f603d51021c56c4d15a8c7ab45e90dbe",
       "dependencies": [
-        "jsr:@std/internal"
+        "jsr:@std/internal@^1.0.12"
       ]
     },
     "@std/bytes@1.0.6": {
@@ -37,13 +44,20 @@
     "@std/cli@1.0.26": {
       "integrity": "53679a2b041406f15c3ff193986852595f3d11ba7b9d4b0c71a42589662e8fb5",
       "dependencies": [
-        "jsr:@std/internal"
+        "jsr:@std/internal@^1.0.12"
       ]
     },
     "@std/csv@1.0.6": {
       "integrity": "52ef0e62799a0028d278fa04762f17f9bd263fad9a8e7f98c14fbd371d62d9fd",
       "dependencies": [
         "jsr:@std/streams"
+      ]
+    },
+    "@std/expect@1.0.17": {
+      "integrity": "316b47dd65c33e3151344eb3267bf42efba17d1415425f07ed96185d67fc04d9",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.14",
+        "jsr:@std/internal@^1.0.10"
       ]
     },
     "@std/fs@0.229.3": {
@@ -55,7 +69,7 @@
     "@std/fs@1.0.22": {
       "integrity": "de0f277a58a867147a8a01bc1b181d0dfa80bfddba8c9cf2bacd6747bcec9308",
       "dependencies": [
-        "jsr:@std/internal",
+        "jsr:@std/internal@^1.0.12",
         "jsr:@std/path@^1.1.4"
       ]
     },
@@ -74,13 +88,20 @@
     "@std/path@1.1.4": {
       "integrity": "1d2d43f39efb1b42f0b1882a25486647cb851481862dc7313390b2bb044314b5",
       "dependencies": [
-        "jsr:@std/internal"
+        "jsr:@std/internal@^1.0.12"
       ]
     },
     "@std/streams@1.0.17": {
       "integrity": "7859f3d9deed83cf4b41f19223d4a67661b3d3819e9fc117698f493bf5992140",
       "dependencies": [
         "jsr:@std/bytes"
+      ]
+    },
+    "@std/testing@1.0.17": {
+      "integrity": "87bdc2700fa98249d48a17cd72413352d3d3680dcfbdb64947fd0982d6bbf681",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.17",
+        "jsr:@std/internal@^1.0.12"
       ]
     },
     "@whyk/utils@1.7.1": {
@@ -389,10 +410,14 @@
     }
   },
   "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@^1.0.11",
+      "jsr:@std/expect@1",
+      "jsr:@std/testing@1"
+    ],
     "members": {
       "cli": {
         "dependencies": [
-          "jsr:@std/assert@^1.0.11",
           "jsr:@std/cli@^1.0.12",
           "jsr:@std/fs@^1.0.11",
           "jsr:@std/path@^1.0.8"
@@ -400,7 +425,6 @@
       },
       "core": {
         "dependencies": [
-          "jsr:@std/assert@^1.0.11",
           "jsr:@std/csv@^1.0.5",
           "jsr:@std/path@^1.0.8",
           "jsr:@whyk/utils@^1.7.1",
