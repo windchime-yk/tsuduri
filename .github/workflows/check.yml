@@ -20,6 +20,10 @@ jobs:
         run: deno fmt --check
       - name: Test
         run: deno task test
+      - name: Publish dry-run (core)
+        run: deno publish --dry-run --config core/deno.jsonc
+      - name: Publish dry-run (cli)
+        run: deno publish --dry-run --config cli/deno.jsonc
       - name: Upload core coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
