@@ -3,7 +3,8 @@
   "version": "0.0.2",
   "tasks": {
     "test": "deno test -R --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/core/' coverage",
-    "generate": "deno run -RWE typescript-json-schema --required model.ts Schema -o schema.json"
+    // generate 専用依存が deno.lock 経由でシングルバイナリに埋め込まれないよう、imports に載せず --no-lock で直接実行する
+    "generate": "deno run --no-lock -RWE npm:typescript-json-schema@0.67.1 --required model.ts Schema -o schema.json"
   },
   "exports": "./mod.ts",
   "imports": {
@@ -11,7 +12,6 @@
     "@std/path": "jsr:@std/path@^1.0.8",
     "@whyk/utils": "jsr:@whyk/utils@^1.7.1",
     "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.8.17",
-    "typescript-json-schema": "npm:typescript-json-schema@^0.67.1",
     "zod": "npm:zod@^3.24.1"
   }
 }
