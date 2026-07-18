@@ -58,8 +58,7 @@ export default jsxRenderer(({ children }) => {
               background: var(--color-accent);
               color: #fff;
               border-radius: 0.5rem;
-              padding: 0.9rem 2.5rem;
-              font-size: 1.1rem;
+              padding: 0.6rem 1.4rem;
               text-decoration: none;
               transition: background 0.2s;
             }
