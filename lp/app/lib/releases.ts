@@ -3,51 +3,15 @@ export type BinaryTarget = {
   label: string;
 };
 
-type ReleaseAsset = {
-  name: string;
-  browser_download_url: string;
-};
-
-type Release = {
-  tag_name: string;
-  assets: ReleaseAsset[];
-};
-
-let binaryUrlsCache: Promise<Record<string, string>> | undefined;
-
 /**
- * 最新のcli@リリースからシングルバイナリのターゲット別ダウンロードURLを取得する。
- * 複数のislandsから呼ばれても、取得は1回だけ行う
+ * 最新のcliリリースのシングルバイナリへの直リンクを組み立てる。
+ * Releaseワークフローがcli以外のリリースを--latest=falseで作成するため、
+ * releases/latestは常に最新のcliリリースを指す
+ * @param target ダウンロード対象のターゲットトリプル
  */
-export const fetchBinaryUrls = (): Promise<Record<string, string>> => {
-  binaryUrlsCache ??= (async () => {
-    try {
-      const response = await fetch(
-        "https://api.github.com/repos/windchime-yk/tsuduri/releases?per_page=20",
-      );
-      if (!response.ok) return {};
-      const releases: Release[] = await response.json();
-      const cliRelease = releases.find((release) =>
-        release.tag_name.startsWith("cli@") && release.assets.length > 0
-      );
-      if (!cliRelease) return {};
-
-      const urls: Record<string, string> = {};
-      for (const asset of cliRelease.assets) {
-        // アセット名は tsuduri-<target>[.exe] 形式
-        const target = asset.name.replace(/^tsuduri-/, "").replace(
-          /\.exe$/,
-          "",
-        );
-        urls[target] = asset.browser_download_url;
-      }
-      return urls;
-    } catch {
-      // 取得できない場合はフォールバックリンクのまま
-      return {};
-    }
-  })();
-  return binaryUrlsCache;
+export const binaryDownloadUrl = (target: string): string => {
+  const ext = target === "x86_64-pc-windows-msvc" ? ".exe" : "";
+  return `https://github.com/windchime-yk/tsuduri/releases/latest/download/tsuduri-${target}${ext}`;
 };
 
 type NavigatorUAData = {

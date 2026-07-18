@@ -1,7 +1,7 @@
 import { css } from "hono/css";
 import { createRoute } from "honox/factory";
-import BinaryLinks from "../islands/binary-links.tsx";
 import DownloadCta from "../islands/download-cta.tsx";
+import { binaryDownloadUrl } from "../lib/releases.ts";
 
 const REPO_URL = "https://github.com/windchime-yk/tsuduri";
 const RELEASES_URL = `${REPO_URL}/releases`;
@@ -204,12 +204,17 @@ export default createRoute((c) => {
                 <p>
                   Denoのインストール不要で使えるCLIの実行ファイルです。お使いの環境のものをダウンロードしてください。
                 </p>
-                <BinaryLinks
-                  targets={BINARY_TARGET_LIST}
-                  fallbackUrl={RELEASES_URL}
-                />
+                <ul>
+                  {BINARY_TARGET_LIST.map(({ target, label }) => (
+                    <li>
+                      <a class="binary-link" href={binaryDownloadUrl(target)}>
+                        {label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
                 <p class={noteClass}>
-                  リンク先が取得できない場合は
+                  うまくダウンロードできない場合は
                   <a href={RELEASES_URL}>リリース一覧</a>の<code>cli@</code>
                   リリースからダウンロードできます。
                 </p>

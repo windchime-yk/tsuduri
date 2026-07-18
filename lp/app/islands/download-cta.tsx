@@ -1,8 +1,8 @@
 import { useEffect, useState } from "hono/jsx";
 import {
+  binaryDownloadUrl,
   type BinaryTarget,
   detectTarget,
-  fetchBinaryUrls,
 } from "../lib/releases.ts";
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 /**
  * ヒーロー直下のダウンロードCTA。
  * アクセスした環境のOSを判定してシングルバイナリの直リンクを出し分け、
- * 判定できない場合やアセットが無い場合はリリース一覧ページへリンクする
+ * 判定できない場合はリリース一覧ページへリンクする
  */
 export default function DownloadCta({ targets, fallbackUrl }: Props) {
   const [label, setLabel] = useState<string | undefined>(undefined);
@@ -27,10 +27,10 @@ export default function DownloadCta({ targets, fallbackUrl }: Props) {
       const matched = targets.find((binaryTarget) =>
         binaryTarget.target === target
       );
-      if (matched) setLabel(matched.label);
+      if (!matched) return;
 
-      const urls = await fetchBinaryUrls();
-      if (urls[target]) setHref(urls[target]);
+      setLabel(matched.label);
+      setHref(binaryDownloadUrl(target));
     })();
   }, []);
 
