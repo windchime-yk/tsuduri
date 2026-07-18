@@ -13,6 +13,9 @@ import {
   readFile,
 } from "@tsuduri/core";
 
+const OUTPUT_BASE_DIR_NAME = "tsuduri_output";
+const OUTPUT_ARCHIVE_BASE_NAME = "tsuduri_output_archive";
+
 export const run = async (
   rawArgs: string[],
   cwd: string = Deno.cwd(),
@@ -65,7 +68,6 @@ export const run = async (
       }
 
       const OUTPUT_FILE_PREFIX = dirEntry.name.split(".").at(0)!;
-      const OUTPUT_BASE_DIR_NAME = "tsuduri_output";
       const OUTPUT_DIR_NAME = join(
         cwd,
         OUTPUT_BASE_DIR_NAME,
@@ -91,8 +93,8 @@ export const run = async (
 
   if (args.compress) {
     await compressFile(
-      join(cwd, "tsuduri_output"),
-      join(cwd, "tsuduri_output_archive"),
+      join(cwd, OUTPUT_BASE_DIR_NAME),
+      join(cwd, OUTPUT_ARCHIVE_BASE_NAME),
     );
   }
 };
