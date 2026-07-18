@@ -94,6 +94,11 @@ export const convertJsonToTextData = (
   }).join(NEW_LINE) + NEW_LINE;
 };
 
+/**
+ * ファイルを読み込んで文字列として返す
+ * @param path 読み込むファイルのパス
+ * @returns ファイルの中身の文字列
+ */
 export const readFile = async (path: string): Promise<string> => {
   const decoder = new TextDecoder();
   const data = await Deno.readFile(path);
