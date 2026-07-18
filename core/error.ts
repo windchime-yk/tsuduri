@@ -1,6 +1,7 @@
+// エラー実装の参考: https://uga-box.hatenablog.com/entry/2022/01/07/000000
+
 /**
  * ファイル形式がCSV/JSON以外だった場合に投げられるエラー
- * @see https://uga-box.hatenablog.com/entry/2022/01/07/000000
  */
 export class FileTypeError extends Error {
   /**
@@ -17,7 +18,6 @@ export class FileTypeError extends Error {
 
 /**
  * ユーザー辞書データに想定外のプロパティが存在した場合に投げられるエラー
- * @see https://uga-box.hatenablog.com/entry/2022/01/07/000000
  */
 export class DataPropertyError extends Error {
   constructor() {
