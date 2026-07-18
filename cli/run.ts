@@ -16,6 +16,11 @@ import {
 const OUTPUT_BASE_DIR_NAME = "tsuduri_output";
 const OUTPUT_ARCHIVE_BASE_NAME = "tsuduri_output_archive";
 
+/**
+ * CLIのエントリーポイント。指定ディレクトリ内のCSV/JSONファイルを読み込み、指定IME向けのユーザー辞書ファイルを生成する
+ * @param rawArgs CLIに渡されたコマンドライン引数
+ * @param cwd 処理の基準となるディレクトリ（省略時はカレントディレクトリ）
+ */
 export const run = async (
   rawArgs: string[],
   cwd: string = Deno.cwd(),

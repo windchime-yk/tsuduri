@@ -18,6 +18,10 @@ jobs:
         run: deno lint
       - name: Format Check
         run: deno fmt --check
+      - name: Doc Lint (core)
+        run: deno doc --lint core/mod.ts
+      - name: Doc Lint (cli)
+        run: deno doc --lint cli/mod.ts
       - name: Test
         run: deno task test
       - name: Publish dry-run (core)

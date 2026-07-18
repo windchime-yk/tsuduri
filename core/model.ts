@@ -1,11 +1,18 @@
+/** 処理成功時の結果 */
 export type SuccessResult<T> = {
+  /** 処理が成功したかどうか */
   success: true;
+  /** 処理結果 */
   result: T;
 };
+/** 処理失敗時の結果 */
 export type ErrorResult = {
+  /** 処理が成功したかどうか */
   success: false;
+  /** 処理失敗の原因となったエラー */
   error: Error;
 };
+/** 成功か失敗かを判別できる処理結果 */
 export type Result<T> = SuccessResult<T> | ErrorResult;
 
 /** 対応しているIME */
