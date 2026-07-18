@@ -50,34 +50,31 @@ jobs:
 
           for pkg in "${PACKAGES[@]}"; do
             LATEST_TAG=$(git tag -l "${pkg}@*" | sort -V | tail -n1)
+            CURRENT_VERSION=$(grep -o '"version": *"[^"]*"' "${pkg}/deno.jsonc" | head -1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
 
             if [ -z "$LATEST_TAG" ]; then
-              DIFF_OUTPUT=$(git log --oneline -- "${pkg}/")
+              # 初回リリース: 履歴からの種別判定は行なわず、コミット済みバージョンをそのまま公開する
+              NEW_VERSION=$CURRENT_VERSION
+              echo "First release for ${pkg}: ${NEW_VERSION}"
             else
               DIFF_OUTPUT=$(git diff --name-only "${LATEST_TAG}..HEAD" -- "${pkg}/")
-            fi
 
-            if [ -z "$DIFF_OUTPUT" ]; then
-              echo "No changes in ${pkg}, skipping."
-              continue
-            fi
+              if [ -z "$DIFF_OUTPUT" ]; then
+                echo "No changes in ${pkg}, skipping."
+                continue
+              fi
 
-            echo "Changes detected in ${pkg}."
+              echo "Changes detected in ${pkg}."
 
-            if [ -z "$LATEST_TAG" ]; then
-              COMMITS=$(git log --pretty=format:"%s" -- "${pkg}/")
-            else
               COMMITS=$(git log --pretty=format:"%s" "${LATEST_TAG}..HEAD" -- "${pkg}/")
+              KIND=$(detect_release_kind "$COMMITS")
+              echo "Release kind for ${pkg}: ${KIND}"
+
+              NEW_VERSION=$(bump_version "$CURRENT_VERSION" "$KIND")
+              echo "Bumping ${pkg}: ${CURRENT_VERSION} -> ${NEW_VERSION}"
+
+              sed -i "s/\"version\": *\"${CURRENT_VERSION}\"/\"version\": \"${NEW_VERSION}\"/" "${pkg}/deno.jsonc"
             fi
-
-            KIND=$(detect_release_kind "$COMMITS")
-            echo "Release kind for ${pkg}: ${KIND}"
-
-            CURRENT_VERSION=$(grep -o '"version": *"[^"]*"' "${pkg}/deno.jsonc" | head -1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
-            NEW_VERSION=$(bump_version "$CURRENT_VERSION" "$KIND")
-            echo "Bumping ${pkg}: ${CURRENT_VERSION} -> ${NEW_VERSION}"
-
-            sed -i "s/\"version\": *\"${CURRENT_VERSION}\"/\"version\": \"${NEW_VERSION}\"/" "${pkg}/deno.jsonc"
 
             BUMPED_TAGS+=("${pkg}@${NEW_VERSION}")
             echo "${pkg}_bumped=true" >> "$GITHUB_OUTPUT"
@@ -108,6 +105,10 @@ jobs:
       - name: Commit and push
         if: steps.bump.outputs.has_changes == 'true'
         run: |
+          if git diff --quiet; then
+            echo "No version changes to commit (first release)."
+            exit 0
+          fi
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
