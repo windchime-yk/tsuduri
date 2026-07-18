@@ -2,3 +2,5 @@
 **/coverage/
 /tsuduri_output
 /tsuduri_output_archive.zip
+/gas/dist/
+/gas/.clasp.json

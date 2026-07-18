@@ -22,6 +22,21 @@ const encodeString = (str: string, encoding: Encoding): Uint8Array => {
 };
 
 /**
+ * ユーザー辞書テキストを対象IMEのエンコーディングに合わせたバイト列に変換する。必要に応じてBOMを付与する
+ * @param rawdata 変換対象のユーザー辞書テキスト
+ * @param imeType 対象IME
+ * @returns 対象IMEのエンコーディングに変換されたバイト列
+ */
+export const encodeDictionaryText = (
+  rawdata: string,
+  imeType: ImeType,
+): Uint8Array => {
+  const { encoding, bom } = imeConfig[imeType];
+  const bomString = bom ? `\ufeff${rawdata}` : rawdata;
+  return encodeString(bomString, encoding);
+};
+
+/**
  * 非同期でユーザー辞書ファイルを作成する
  * @param rawdata ファイルに書き込まれるユーザー辞書データ
  * @param filepath ファイル名
@@ -32,10 +47,7 @@ const writeFile = async (
   filePath: string,
   imeType: ImeType,
 ): Promise<void> => {
-  const { encoding, bom } = imeConfig[imeType];
-  const bomString = bom ? `\ufeff${rawdata}` : rawdata;
-  const data = encodeString(bomString, encoding);
-  await Deno.writeFile(filePath, data);
+  await Deno.writeFile(filePath, encodeDictionaryText(rawdata, imeType));
 };
 
 /**
