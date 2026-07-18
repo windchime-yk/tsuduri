@@ -1,19 +1,25 @@
-name: Version bump
+name: Release
 
 on:
   workflow_dispatch:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
-  bump:
+  release:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
 
       - name: Detect changed packages and bump versions
         id: bump
@@ -74,6 +80,7 @@ jobs:
             sed -i "s/\"version\": *\"${CURRENT_VERSION}\"/\"version\": \"${NEW_VERSION}\"/" "${pkg}/deno.jsonc"
 
             BUMPED_TAGS+=("${pkg}@${NEW_VERSION}")
+            echo "${pkg}_bumped=true" >> "$GITHUB_OUTPUT"
           done
 
           if [ ${#BUMPED_TAGS[@]} -eq 0 ]; then
@@ -86,6 +93,17 @@ jobs:
 
           TAGS_JSON=$(printf '%s\n' "${BUMPED_TAGS[@]}" | jq -R . | jq -s -c .)
           echo "tags=${TAGS_JSON}" >> "$GITHUB_OUTPUT"
+
+      # cli は core の workspace 依存を公開済みバージョンへ書き換えて publish されるため、
+      # 必ず core を先に publish する。commit とタグ push は publish 成功後に行い、
+      # 失敗時に未公開バージョンのバンプがリポジトリに残らないようにする。
+      - name: Publish core
+        if: steps.bump.outputs.core_bumped == 'true'
+        run: deno publish --allow-dirty --config core/deno.jsonc
+
+      - name: Publish cli
+        if: steps.bump.outputs.cli_bumped == 'true'
+        run: deno publish --allow-dirty --config cli/deno.jsonc
 
       - name: Commit and push
         if: steps.bump.outputs.has_changes == 'true'
