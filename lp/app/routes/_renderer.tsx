@@ -44,9 +44,38 @@ export default jsxRenderer(({ children }) => {
               color: var(--color-accent);
             }
 
-            /* islandsコンポーネント(binary-links)から参照するためグローバルに定義する */
+            /* 以下はislandsコンポーネントから参照するためグローバルに定義する */
             .binary-link {
               color: var(--color-accent);
+            }
+
+            .download-cta {
+              margin-top: 2.5rem;
+            }
+
+            .download-cta-button {
+              display: inline-block;
+              background: var(--color-accent);
+              color: #fff;
+              border-radius: 0.5rem;
+              padding: 0.9rem 2.5rem;
+              font-size: 1.1rem;
+              text-decoration: none;
+              transition: background 0.2s;
+            }
+
+            .download-cta-button:hover {
+              background: var(--color-accent-dark);
+            }
+
+            .download-cta-other {
+              display: block;
+              margin-top: 0.75rem;
+              font-size: 0.85rem;
+            }
+
+            .download-cta-other a {
+              color: var(--color-muted);
             }
           `}
         </Style>

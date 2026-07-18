@@ -1,6 +1,7 @@
 import { css } from "hono/css";
 import { createRoute } from "honox/factory";
 import BinaryLinks from "../islands/binary-links.tsx";
+import DownloadCta from "../islands/download-cta.tsx";
 
 const REPO_URL = "https://github.com/windchime-yk/tsuduri";
 const RELEASES_URL = `${REPO_URL}/releases`;
@@ -150,6 +151,10 @@ export default createRoute((c) => {
             Tsuduri（つづり）は、CSVまたはJSONで管理している辞書データから、
             各IME向けの日本語ユーザー辞書ファイルを一括生成するツールです。
           </p>
+          <DownloadCta
+            targets={BINARY_TARGET_LIST}
+            fallbackUrl={RELEASES_URL}
+          />
         </div>
       </header>
 
@@ -166,7 +171,7 @@ export default createRoute((c) => {
           </div>
         </section>
 
-        <section class={sectionClass}>
+        <section id="download" class={sectionClass}>
           <div class={wrapperClass}>
             <h2>ダウンロード</h2>
             <div class={downloadGridClass}>
