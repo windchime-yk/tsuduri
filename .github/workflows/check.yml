@@ -18,6 +18,9 @@ jobs:
         run: deno lint
       - name: Format Check
         run: deno fmt --check
+      # lpのnpm依存(vite/honox)をnode_modulesへ展開する
+      - name: Install dependencies
+        run: deno install
       - name: Doc Lint (core)
         run: deno doc --lint core/mod.ts
       - name: Doc Lint (cli)

@@ -2,3 +2,5 @@
 **/coverage/
 /tsuduri_output
 /tsuduri_output_archive.zip
+node_modules/
+/lp/dist/
