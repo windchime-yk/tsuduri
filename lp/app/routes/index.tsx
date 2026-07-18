@@ -1,4 +1,6 @@
+import { css } from "hono/css";
 import { createRoute } from "honox/factory";
+import BinaryLinks from "../islands/binary-links.tsx";
 
 const REPO_URL = "https://github.com/windchime-yk/tsuduri";
 const RELEASES_URL = `${REPO_URL}/releases`;
@@ -11,42 +13,140 @@ const BINARY_TARGET_LIST = [
   { target: "x86_64-pc-windows-msvc", label: "Windows (x86_64)" },
 ];
 
-// 最新のcliリリースからシングルバイナリの直接ダウンロードURLを取得してリンクを書き換える。
-// 取得できない場合はリリース一覧ページへの静的リンクのまま利用する
-const RESOLVE_BINARY_LINKS_SCRIPT = `
-(async () => {
-  try {
-    const response = await fetch(
-      "https://api.github.com/repos/windchime-yk/tsuduri/releases?per_page=20",
-    );
-    if (!response.ok) return;
-    const releases = await response.json();
-    const cliRelease = releases.find((release) =>
-      release.tag_name.startsWith("cli@") && release.assets.length > 0
-    );
-    if (!cliRelease) return;
-    for (const anchor of document.querySelectorAll("[data-binary-target]")) {
-      const asset = cliRelease.assets.find((asset) =>
-        asset.name.includes(anchor.dataset.binaryTarget)
-      );
-      if (asset) anchor.href = asset.browser_download_url;
-    }
-  } catch {
-    // ネットワークエラー時は静的リンクのまま
+const wrapperClass = css`
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+`;
+
+const heroClass = css`
+  padding: 5rem 0 4rem;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+
+  & h1 {
+    font-size: 3rem;
+    letter-spacing: 0.35em;
+    text-indent: 0.35em;
+    font-weight: 600;
   }
-})();
+`;
+
+const heroSubtitleClass = css`
+  margin-top: 1rem;
+  font-size: 1.15rem;
+  color: var(--color-muted);
+`;
+
+const heroDescriptionClass = css`
+  margin-top: 2rem;
+  text-align: left;
+  display: inline-block;
+`;
+
+const sectionClass = css`
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--color-border);
+
+  & h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+`;
+
+const imeListClass = css`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+
+  & li {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    text-align: center;
+  }
+`;
+
+const downloadGridClass = css`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.5rem;
+`;
+
+const downloadCardClass = css`
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+
+  & h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+  }
+
+  & > p {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  & ul {
+    list-style: none;
+  }
+
+  & li + li {
+    margin-top: 0.5rem;
+  }
+`;
+
+const buttonClass = css`
+  display: inline-block;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  text-decoration: none;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--color-accent-dark);
+  }
+`;
+
+const noteClass = css`
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+`;
+
+const codeBlockClass = css`
+  background: #2d2a26;
+  color: #f5f2ec;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+`;
+
+const footerClass = css`
+  padding: 2.5rem 0;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.9rem;
 `;
 
 export default createRoute((c) => {
   return c.render(
     <>
-      <header class="hero">
-        <div class="wrapper">
+      <header class={heroClass}>
+        <div class={wrapperClass}>
           <h1>Tsuduri</h1>
-          <p class="subtitle">
+          <p class={heroSubtitleClass}>
             ひとつの辞書データから、すべてのIMEユーザー辞書へ。
           </p>
-          <p class="description">
+          <p class={heroDescriptionClass}>
             Tsuduri（つづり）は、CSVまたはJSONで管理している辞書データから、
             各IME向けの日本語ユーザー辞書ファイルを一括生成するツールです。
           </p>
@@ -54,10 +154,10 @@ export default createRoute((c) => {
       </header>
 
       <main>
-        <section>
-          <div class="wrapper">
+        <section class={sectionClass}>
+          <div class={wrapperClass}>
             <h2>対応IME</h2>
-            <ul class="ime-list">
+            <ul class={imeListClass}>
               <li>Google 日本語入力</li>
               <li>macOS 日本語IM</li>
               <li>Microsoft IME</li>
@@ -66,11 +166,11 @@ export default createRoute((c) => {
           </div>
         </section>
 
-        <section>
-          <div class="wrapper">
+        <section class={sectionClass}>
+          <div class={wrapperClass}>
             <h2>ダウンロード</h2>
-            <div class="download-grid">
-              <div class="download-card">
+            <div class={downloadGridClass}>
+              <div class={downloadCardClass}>
                 <h3>Excelテンプレート</h3>
                 <p>
                   辞書データの管理に使えるテンプレートです。ExcelなどでデータをつくってCSVに書き出せば、そのままTsuduriで変換できます。
@@ -78,7 +178,7 @@ export default createRoute((c) => {
                 <ul>
                   <li>
                     <a
-                      class="button"
+                      class={buttonClass}
                       href={`${REPO_URL}/raw/main/example/input/tsuduri-example.xlsx`}
                     >
                       xlsx形式
@@ -86,7 +186,7 @@ export default createRoute((c) => {
                   </li>
                   <li>
                     <a
-                      class="button"
+                      class={buttonClass}
                       href={`${REPO_URL}/raw/main/example/input/tsuduri-example.ods`}
                     >
                       ods形式
@@ -94,25 +194,16 @@ export default createRoute((c) => {
                   </li>
                 </ul>
               </div>
-              <div class="download-card">
+              <div class={downloadCardClass}>
                 <h3>シングルバイナリ</h3>
                 <p>
                   Denoのインストール不要で使えるCLIの実行ファイルです。お使いの環境のものをダウンロードしてください。
                 </p>
-                <ul>
-                  {BINARY_TARGET_LIST.map(({ target, label }) => (
-                    <li>
-                      <a
-                        class="binary-link"
-                        data-binary-target={target}
-                        href={RELEASES_URL}
-                      >
-                        {label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-                <p class="note">
+                <BinaryLinks
+                  targets={BINARY_TARGET_LIST}
+                  fallbackUrl={RELEASES_URL}
+                />
+                <p class={noteClass}>
                   リンク先が取得できない場合は
                   <a href={RELEASES_URL}>リリース一覧</a>の<code>cli@</code>
                   リリースからダウンロードできます。
@@ -122,8 +213,8 @@ export default createRoute((c) => {
           </div>
         </section>
 
-        <section>
-          <div class="wrapper">
+        <section class={sectionClass}>
+          <div class={wrapperClass}>
             <h2>Denoで使う</h2>
             <p>
               Denoをお使いの場合は、<a href="https://jsr.io/@tsuduri/cli">
@@ -131,7 +222,7 @@ export default createRoute((c) => {
               </a>
               からCLIをインストールできます。
             </p>
-            <pre>
+            <pre class={codeBlockClass}>
               <code>
                 deno install -g -RWE --allow-run -n tsuduri jsr:@tsuduri/cli
               </code>
@@ -140,17 +231,13 @@ export default createRoute((c) => {
         </section>
       </main>
 
-      <footer>
-        <div class="wrapper">
+      <footer class={footerClass}>
+        <div class={wrapperClass}>
           <p>
             <a href={REPO_URL}>GitHub</a> / MIT License
           </p>
         </div>
       </footer>
-
-      <script
-        dangerouslySetInnerHTML={{ __html: RESOLVE_BINARY_LINKS_SCRIPT }}
-      />
     </>,
   );
 });
