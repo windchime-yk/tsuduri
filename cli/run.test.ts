@@ -10,13 +10,15 @@ import { run } from "./run.ts";
 configure({ useWebWorkers: false });
 
 const rootDir = join(import.meta.dirname!, "..");
-const MOCK_DIR = "core/test/mock";
+const MOCK_DIR = "cli/test/mock";
 const OUTPUT_DIR = join(rootDir, "tsuduri_output");
 const ARCHIVE_FILE = join(rootDir, "tsuduri_output_archive.zip");
 
 describe("CLI", () => {
   afterAll(async () => {
-    await Deno.remove(OUTPUT_DIR, { recursive: true });
+    if (await exists(OUTPUT_DIR)) {
+      await Deno.remove(OUTPUT_DIR, { recursive: true });
+    }
     if (await exists(ARCHIVE_FILE)) {
       await Deno.remove(ARCHIVE_FILE);
     }
