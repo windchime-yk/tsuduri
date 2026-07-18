@@ -121,12 +121,23 @@ jobs:
           git commit -m "chore: bump package versions"
           git push
 
-      - name: Create and push tags
+      - name: Create tags and GitHub Releases
         if: steps.bump.outputs.has_changes == 'true'
         env:
           TAGS: ${{ steps.bump.outputs.tags }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           for tag in $(echo "$TAGS" | jq -r '.[]'); do
+            pkg="${tag%%@*}"
+            # リリースノートの起点にする同一パッケージの直前タグ(新タグ作成前に取得)
+            PREV_TAG=$(git tag -l "${pkg}@*" | sort -V | tail -n1)
+
             git tag "$tag"
             git push origin "$tag"
+
+            if [ -n "$PREV_TAG" ]; then
+              gh release create "$tag" --title "$tag" --generate-notes --notes-start-tag "$PREV_TAG"
+            else
+              gh release create "$tag" --title "$tag" --generate-notes
+            fi
           done
