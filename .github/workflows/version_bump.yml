@@ -140,4 +140,32 @@ jobs:
             else
               gh release create "$tag" --title "$tag" --generate-notes
             fi
+
+            # cli はプラットフォームごとのシングルバイナリをコンパイルしてリリースに添付する
+            if [ "$pkg" = "cli" ]; then
+              TARGETS=(
+                "x86_64-unknown-linux-gnu"
+                "aarch64-unknown-linux-gnu"
+                "x86_64-apple-darwin"
+                "aarch64-apple-darwin"
+                "x86_64-pc-windows-msvc"
+              )
+
+              mkdir -p dist
+              for target in "${TARGETS[@]}"; do
+                ext=""
+                if [ "$target" = "x86_64-pc-windows-msvc" ]; then
+                  ext=".exe"
+                fi
+
+                deno compile \
+                  --allow-read \
+                  --allow-write \
+                  --target "$target" \
+                  --output "dist/tsuduri-${target}${ext}" \
+                  cli/mod.ts
+
+                gh release upload "$tag" "dist/tsuduri-${target}${ext}"
+              done
+            fi
           done
