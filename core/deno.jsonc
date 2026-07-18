@@ -1,6 +1,6 @@
 {
   "name": "@tsuduri/core",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "tasks": {
     "test": "deno test -R --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/core/' coverage",
     // generate 専用依存が deno.lock 経由でシングルバイナリに埋め込まれないよう、imports に載せず --no-lock で直接実行する
