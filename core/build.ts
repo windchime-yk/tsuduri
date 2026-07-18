@@ -2,7 +2,7 @@ import { Buffer } from "node:buffer";
 import { BlobReader, Uint8ArrayWriter, ZipWriter } from "@zip-js/zip-js";
 import { getFileList } from "@whyk/utils/file";
 import { imeConfig } from "./config.ts";
-import type { ImeType } from "../model.ts";
+import type { ImeType } from "./model.ts";
 
 /**
  * 非同期でユーザー辞書ファイルを作成する
@@ -52,7 +52,7 @@ export const generateDictionaryFile = async (
   data: string,
   path: string,
   imeType: ImeType,
-) => {
+): Promise<void> => {
   await writeFile(data, path, imeType);
   outputBuildLog(path);
 };

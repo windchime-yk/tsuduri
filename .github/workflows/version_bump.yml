@@ -1,0 +1,143 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Detect changed packages and bump versions
+        id: bump
+        run: |
+          bump_version() {
+            local version=$1 kind=$2
+            IFS='.' read -r major minor patch <<< "$version"
+            case $kind in
+              major) echo "$((major+1)).0.0" ;;
+              minor) echo "${major}.$((minor+1)).0" ;;
+              patch) echo "${major}.${minor}.$((patch+1))" ;;
+            esac
+          }
+
+          detect_release_kind() {
+            local commits="$1"
+            if echo "$commits" | grep -qE '^[a-z]+(\(.+\))?!:|BREAKING CHANGE'; then
+              echo "major"
+            elif echo "$commits" | grep -qE '^feat(\(.+\))?:'; then
+              echo "minor"
+            else
+              echo "patch"
+            fi
+          }
+
+          PACKAGES=("core" "cli")
+          BUMPED_TAGS=()
+
+          for pkg in "${PACKAGES[@]}"; do
+            LATEST_TAG=$(git tag -l "${pkg}@*" | sort -V | tail -n1)
+            CURRENT_VERSION=$(grep -o '"version": *"[^"]*"' "${pkg}/deno.jsonc" | head -1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
+
+            if [ -z "$CURRENT_VERSION" ]; then
+              echo "Failed to extract version from ${pkg}/deno.jsonc" >&2
+              exit 1
+            fi
+
+            if [ -z "$LATEST_TAG" ]; then
+              # 初回リリース: 履歴からの種別判定は行なわず、コミット済みバージョンをそのまま公開する
+              NEW_VERSION=$CURRENT_VERSION
+              echo "First release for ${pkg}: ${NEW_VERSION}"
+            else
+              DIFF_OUTPUT=$(git diff --name-only "${LATEST_TAG}..HEAD" -- "${pkg}/")
+
+              if [ -z "$DIFF_OUTPUT" ]; then
+                echo "No changes in ${pkg}, skipping."
+                continue
+              fi
+
+              echo "Changes detected in ${pkg}."
+
+              # 本文の BREAKING CHANGE フッターも判定対象にするため件名(%s)と本文(%b)を含める
+              COMMITS=$(git log --pretty=format:"%s%n%b" "${LATEST_TAG}..HEAD" -- "${pkg}/")
+              KIND=$(detect_release_kind "$COMMITS")
+              echo "Release kind for ${pkg}: ${KIND}"
+
+              NEW_VERSION=$(bump_version "$CURRENT_VERSION" "$KIND")
+              echo "Bumping ${pkg}: ${CURRENT_VERSION} -> ${NEW_VERSION}"
+
+              sed -i "s/\"version\": *\"${CURRENT_VERSION}\"/\"version\": \"${NEW_VERSION}\"/" "${pkg}/deno.jsonc"
+            fi
+
+            BUMPED_TAGS+=("${pkg}@${NEW_VERSION}")
+            echo "${pkg}_bumped=true" >> "$GITHUB_OUTPUT"
+          done
+
+          if [ ${#BUMPED_TAGS[@]} -eq 0 ]; then
+            echo "No packages to bump."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+          TAGS_JSON=$(printf '%s\n' "${BUMPED_TAGS[@]}" | jq -R . | jq -s -c .)
+          echo "tags=${TAGS_JSON}" >> "$GITHUB_OUTPUT"
+
+      # cli は core の workspace 依存を公開済みバージョンへ書き換えて publish されるため、
+      # 必ず core を先に publish する。commit とタグ push は publish 成功後に行い、
+      # 失敗時に未公開バージョンのバンプがリポジトリに残らないようにする。
+      - name: Publish core
+        if: steps.bump.outputs.core_bumped == 'true'
+        run: deno publish --allow-dirty --config core/deno.jsonc
+
+      - name: Publish cli
+        if: steps.bump.outputs.cli_bumped == 'true'
+        run: deno publish --allow-dirty --config cli/deno.jsonc
+
+      - name: Commit and push
+        if: steps.bump.outputs.has_changes == 'true'
+        run: |
+          if git diff --quiet; then
+            echo "No version changes to commit (first release)."
+            exit 0
+          fi
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: bump package versions"
+          git push
+
+      - name: Create tags and GitHub Releases
+        if: steps.bump.outputs.has_changes == 'true'
+        env:
+          TAGS: ${{ steps.bump.outputs.tags }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for tag in $(echo "$TAGS" | jq -r '.[]'); do
+            pkg="${tag%%@*}"
+            # リリースノートの起点にする同一パッケージの直前タグ(新タグ作成前に取得)
+            PREV_TAG=$(git tag -l "${pkg}@*" | sort -V | tail -n1)
+
+            git tag "$tag"
+            git push origin "$tag"
+
+            if [ -n "$PREV_TAG" ]; then
+              gh release create "$tag" --title "$tag" --generate-notes --notes-start-tag "$PREV_TAG"
+            else
+              gh release create "$tag" --title "$tag" --generate-notes
+            fi
+          done

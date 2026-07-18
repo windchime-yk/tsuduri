@@ -6,7 +6,7 @@ import type {
   InputUserDictionary,
   Result,
   YesOrNo,
-} from "../model.ts";
+} from "./model.ts";
 import { COMMA, TAB } from "./config.ts";
 import { DataPropertyError, FileTypeError } from "./error.ts";
 
@@ -66,7 +66,7 @@ export const detectWordclass = (
   imeType: ImeType,
   isSuggest: YesOrNo,
   isSuppress: YesOrNo,
-) => {
+): string => {
   if (imeType === "Google IME" && isSuggest === "YES") return "サジェストのみ";
   if (imeType === "Google IME" && isSuppress === "YES") return "抑制単語";
   return wordclass;
@@ -77,6 +77,8 @@ export const detectWordclass = (
  * @param type 対象IMEのデータタイプ
  * @returns カンマかタブ
  */
-export const detectDelimiter = (type: ImeConfig[ImeType]["dataType"]) => {
+export const detectDelimiter = (
+  type: ImeConfig[ImeType]["dataType"],
+): string => {
   return type === "CSV" ? COMMA : TAB;
 };

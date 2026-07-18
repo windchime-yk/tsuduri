@@ -1,4 +1,4 @@
 .DS_Store
-/coverage/
+**/coverage/
 /tsuduri_output
 /tsuduri_output_archive.zip

@@ -21,9 +21,3 @@ export class DataPropertyError extends BaseError {
     super(`想定していないプロパティが存在します。データを再確認してください`);
   }
 }
-
-export class CliError extends BaseError {
-  constructor(message: string) {
-    super(message);
-  }
-}
