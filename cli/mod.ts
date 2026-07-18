@@ -1,3 +1,7 @@
 import { run } from "./run.ts";
 
-await run(Deno.args);
+export { run };
+
+if (import.meta.main) {
+  await run(Deno.args);
+}
