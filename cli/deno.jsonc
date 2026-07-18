@@ -1,6 +1,6 @@
 {
   "name": "@tsuduri/cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "exports": "./mod.ts",
   "tasks": {
     "test": "deno test -RW --allow-run --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/cli/' coverage"
