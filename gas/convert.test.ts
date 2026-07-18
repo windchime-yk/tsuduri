@@ -39,9 +39,35 @@ describe("シート値をレコード配列に変換する", () => {
     const values = [
       ["type", "word", "reading", "isSuppress", "isSuggest", "description"],
       ["", "", "", "", "", ""],
+      [null, null, null, null, null, null],
       ["人名", "Ryan Dahl", "らいあんだーる", "NO", "NO", ""],
     ];
     expect(sheetValuesToRecords(values)).toHaveLength(1);
+  });
+  it("欠けているセルやnullのセルは空文字列になる", () => {
+    const values = [
+      ["type", "word", "reading", "isSuppress", "isSuggest", "description"],
+      ["人名", "Ryan Dahl", "らいあんだーる", "NO", "NO", null],
+      ["人名", "Brendan Eich", "ぶれんだんあいく", "NO", "NO"],
+    ];
+    expect(sheetValuesToRecords(values)).toEqual([
+      {
+        type: "人名",
+        word: "Ryan Dahl",
+        reading: "らいあんだーる",
+        isSuppress: "NO",
+        isSuggest: "NO",
+        description: "",
+      },
+      {
+        type: "人名",
+        word: "Brendan Eich",
+        reading: "ぶれんだんあいく",
+        isSuppress: "NO",
+        isSuggest: "NO",
+        description: "",
+      },
+    ]);
   });
   it("値が空なら空配列を返す", () => {
     expect(sheetValuesToRecords([])).toEqual([]);
