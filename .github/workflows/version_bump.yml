@@ -52,6 +52,11 @@ jobs:
             LATEST_TAG=$(git tag -l "${pkg}@*" | sort -V | tail -n1)
             CURRENT_VERSION=$(grep -o '"version": *"[^"]*"' "${pkg}/deno.jsonc" | head -1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')
 
+            if [ -z "$CURRENT_VERSION" ]; then
+              echo "Failed to extract version from ${pkg}/deno.jsonc" >&2
+              exit 1
+            fi
+
             if [ -z "$LATEST_TAG" ]; then
               # 初回リリース: 履歴からの種別判定は行なわず、コミット済みバージョンをそのまま公開する
               NEW_VERSION=$CURRENT_VERSION
@@ -66,7 +71,8 @@ jobs:
 
               echo "Changes detected in ${pkg}."
 
-              COMMITS=$(git log --pretty=format:"%s" "${LATEST_TAG}..HEAD" -- "${pkg}/")
+              # 本文の BREAKING CHANGE フッターも判定対象にするため件名(%s)と本文(%b)を含める
+              COMMITS=$(git log --pretty=format:"%s%n%b" "${LATEST_TAG}..HEAD" -- "${pkg}/")
               KIND=$(detect_release_kind "$COMMITS")
               echo "Release kind for ${pkg}: ${KIND}"
 
