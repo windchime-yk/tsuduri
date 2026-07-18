@@ -19,19 +19,8 @@ export type Result<T> = SuccessResult<T> | ErrorResult;
 export type ImeType = "Google IME" | "macOS IME" | "Microsoft IME" | "GBoard";
 /** YESかNOか */
 export type YesOrNo = "YES" | "NO";
-/** Node.js Buffer準拠のエンコーディング */
-export type Encoding =
-  | "ascii"
-  | "utf8"
-  | "utf-8"
-  | "utf16le"
-  | "ucs2"
-  | "ucs-2"
-  | "base64"
-  | "base64url"
-  | "latin1"
-  | "binary"
-  | "hex";
+/** ユーザー辞書ファイルのエンコーディング */
+export type Encoding = "utf-8" | "utf16le";
 
 /** IME設定 */
 export type ImeConfig = {
@@ -39,7 +28,7 @@ export type ImeConfig = {
   [name in ImeType]: {
     /** 対象言語（現状はja-JPのみ） */
     lang: "ja-JP";
-    /** （Node.js Buffer準拠） */
+    /** ユーザー辞書ファイルのエンコーディング */
     encoding: Encoding;
     /** BOMがつくかどうか */
     bom?: boolean;

@@ -1,8 +1,25 @@
-import { Buffer } from "node:buffer";
 import { BlobReader, Uint8ArrayWriter, ZipWriter } from "@zip-js/zip-js";
 import { getFileList } from "@whyk/utils/file";
 import { imeConfig } from "./config.ts";
-import type { ImeType } from "./model.ts";
+import type { Encoding, ImeType } from "./model.ts";
+
+/**
+ * 文字列を指定エンコーディングのバイト列に変換する
+ * @param str 変換対象の文字列
+ * @param encoding 変換先エンコーディング
+ */
+const encodeString = (str: string, encoding: Encoding): Uint8Array => {
+  if (encoding === "utf16le") {
+    const buf = new Uint8Array(str.length * 2);
+    for (let i = 0; i < str.length; i++) {
+      const code = str.charCodeAt(i);
+      buf[i * 2] = code & 0xff;
+      buf[i * 2 + 1] = (code >> 8) & 0xff;
+    }
+    return buf;
+  }
+  return new TextEncoder().encode(str);
+};
 
 /**
  * 非同期でユーザー辞書ファイルを作成する
@@ -17,7 +34,7 @@ const writeFile = async (
 ): Promise<void> => {
   const { encoding, bom } = imeConfig[imeType];
   const bomString = bom ? `\ufeff${rawdata}` : rawdata;
-  const data = Buffer.from(bomString, encoding);
+  const data = encodeString(bomString, encoding);
   await Deno.writeFile(filePath, data);
 };
 
