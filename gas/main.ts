@@ -1,11 +1,12 @@
 /// <reference types="npm:@types/google-apps-script@^2.0.11" />
 
+// 既定のエントリはzip処理(@zip-js/zip-js)を巻き込み、GASに存在しないTransformStreamを参照してしまうため、portableを読み込む
 import {
   convertJsonToTextData,
   encodeDictionaryText,
   type ImeType,
   isValidJson,
-} from "@tsuduri/core";
+} from "@tsuduri/core/portable";
 import { sheetValuesToRecords, toSignedBytes } from "./convert.ts";
 import { buildDownloadHtml } from "./download.ts";
 

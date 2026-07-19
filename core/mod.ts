@@ -12,10 +12,8 @@ export { convertJsonToTextData, parsedCsvToJson, readFile } from "./convert.ts";
 
 export { isValidFileExtention, isValidJson } from "./validation.ts";
 
-export {
-  compressFile,
-  encodeDictionaryText,
-  generateDictionaryFile,
-} from "./build.ts";
+export { compressFile, generateDictionaryFile } from "./build.ts";
+
+export { encodeDictionaryText } from "./encode.ts";
 
 export { DataPropertyError, FileTypeError } from "./error.ts";
