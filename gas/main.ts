@@ -7,6 +7,7 @@ import {
   isValidJson,
 } from "@tsuduri/core";
 import { sheetValuesToRecords, toSignedBytes } from "./convert.ts";
+import { buildDownloadHtml } from "./download.ts";
 
 const IME_TYPE_LIST: ImeType[] = [
   "Google IME",
@@ -24,7 +25,7 @@ export const onOpen = (): void => {
     .addToUi();
 };
 
-/** アクティブなシートの辞書データから全IME向けのユーザー辞書ファイルを生成し、zipにまとめてGoogle Driveへ保存する */
+/** アクティブなシートの辞書データから全IME向けのユーザー辞書ファイルを生成し、zipにまとめてダイアログからダウンロードさせる */
 export const generateDictionaryFiles = (): void => {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const records = sheetValuesToRecords(sheet.getDataRange().getValues());
@@ -42,11 +43,17 @@ export const generateDictionaryFiles = (): void => {
   });
 
   const archive = Utilities.zip(blobs, OUTPUT_ARCHIVE_NAME);
-  const file = DriveApp.createFile(archive);
+  const dialog = HtmlService
+    .createHtmlOutput(
+      buildDownloadHtml(
+        Utilities.base64Encode(archive.getBytes()),
+        OUTPUT_ARCHIVE_NAME,
+      ),
+    )
+    .setWidth(320)
+    .setHeight(140);
 
-  SpreadsheetApp.getUi().alert(
-    `ユーザー辞書ファイルを生成しました。\n${file.getUrl()}`,
-  );
+  SpreadsheetApp.getUi().showModalDialog(dialog, "Tsuduri");
 };
 
 Object.assign(globalThis, { tsuduri: { onOpen, generateDictionaryFiles } });
