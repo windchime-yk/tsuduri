@@ -32,7 +32,8 @@ the [Excel template](../example/input/tsuduri-example.xlsx)).
 Just copy the template spreadsheet. You do not need to install clasp or touch
 Google Apps Script.
 
-1. Open the template (not published yet; the URL will be added here once it is)
+1. Open the
+   [template](https://docs.google.com/spreadsheets/d/1I2lEn7Df3eR4It2JvW2eUBNTeIDqphdmvFMvBd5xpd4/copy)
 2. Click "Make a copy" to copy it to your own Google Drive
 3. Open the copied spreadsheet and a "Tsuduri" menu will appear
 
@@ -69,6 +70,9 @@ Run "ユーザー辞書ファイルを生成" from the "Tsuduri" menu. It builds
 `tsuduri_output.zip`, which contains user dictionary files for all supported
 IMEs, and shows a download button in a dialog. Clicking it downloads the file
 straight to your browser.
+
+The active sheet (tab) is the target, and its name is used in the generated file
+names: a sheet named `example` produces `example-googleime.txt` and so on.
 
 ## Publishing the template
 

@@ -62,6 +62,7 @@ tsuduri --dir=example/input/raw --all --compress
 ## Use with Google Spreadsheet
 You can generate user dictionary files from dictionary data managed in a Google
 Spreadsheet, straight from a menu on the sheet.  
+Just copy the [template](https://docs.google.com/spreadsheets/d/1I2lEn7Df3eR4It2JvW2eUBNTeIDqphdmvFMvBd5xpd4/copy) to get started.
 See [`gas/README_EN.md`](./gas/README_EN.md) for setup and usage.
 
 ## Build dictionary workflow example
