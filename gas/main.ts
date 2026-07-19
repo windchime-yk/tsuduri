@@ -1,5 +1,7 @@
 /// <reference types="npm:@types/google-apps-script@^2.0.11" />
 
+// GASに存在しないTextEncoderを補うため、他のモジュールより先に読み込む
+import "./polyfill.ts";
 // 既定のエントリはzip処理(@zip-js/zip-js)を巻き込み、GASに存在しないTransformStreamを参照してしまうため、portableを読み込む
 import {
   convertJsonToTextData,
