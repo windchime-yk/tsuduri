@@ -28,6 +28,7 @@ The goal is to create all IME user dictionaries from a single file.
 ## Feature
 - [ ] API
 - [x] CLI
+- [x] Google Spreadsheet (GAS)
 - [ ] Web App
 
 ## Install
@@ -57,6 +58,11 @@ tsuduri --dir=example/input/raw --google --macos --microsoft --gboard
 ``` bash
 tsuduri --dir=example/input/raw --all --compress
 ```
+
+## Use with Google Spreadsheet
+You can generate user dictionary files from dictionary data managed in a Google
+Spreadsheet, straight from a menu on the sheet.  
+See [`gas/README_EN.md`](./gas/README_EN.md) for setup and usage.
 
 ## Build dictionary workflow example
 ``` yml

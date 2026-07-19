@@ -26,6 +26,7 @@ Denoで作られた、IMEユーザー辞書統一出力ツール。
 ## 提供手段
 - [ ] API
 - [x] CLI
+- [x] Google Spreadsheet（GAS）
 - [ ] Web App
 
 ## インストール方法
@@ -57,6 +58,10 @@ tsuduri --dir=example/input/raw --google --macos --microsoft --gboard
 ``` bash
 tsuduri --dir=example/input/raw --all --compress
 ```
+
+## Google Spreadsheetで使う
+Google Spreadsheetで管理している辞書データから、シート上のメニュー操作でユーザー辞書ファイルを生成できます。  
+セットアップと使い方は[`gas/README.md`](./gas/README.md)を確認してください。
 
 ## GitHub Actionsでの設定例
 ``` yml

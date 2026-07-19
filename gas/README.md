@@ -28,7 +28,7 @@ Driveへ保存します。
 1. [clasp](https://github.com/google/clasp)にログインします
 
    ```bash
-   npx @google/clasp login
+   deno run -A --no-lock npm:@google/clasp@3 login
    ```
 
 2. 対象のスプレッドシートに紐づくコンテナバインドスクリプトを用意し、`.clasp.json.example`をコピーして`scriptId`を設定します

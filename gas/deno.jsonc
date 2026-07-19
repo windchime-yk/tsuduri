@@ -4,7 +4,8 @@
     "test": "deno check main.ts && deno test --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/gas/' coverage",
     // GASはESM非対応のため、esbuildベースのdeno bundleでIIFE形式に変換し、GASが実行対象と認識できるトップレベル関数を連結する
     "bundle": "deno bundle --format=iife --output dist/bundle.js main.ts && cat entrypoints.js >> dist/bundle.js && cp appsscript.json dist/",
-    "deploy": "deno task bundle && npx @google/clasp push"
+    // clasp 専用依存が deno.lock に混入しないよう、imports に載せず --no-lock で直接実行する
+    "deploy": "deno task bundle && deno run -A --no-lock npm:@google/clasp@3 push"
   },
   "imports": {
     "@types/google-apps-script": "npm:@types/google-apps-script@^2.0.11"

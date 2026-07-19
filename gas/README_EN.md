@@ -29,7 +29,7 @@ the [Excel template](../example/input/tsuduri-example.xlsx)).
 1. Log in to [clasp](https://github.com/google/clasp)
 
    ```bash
-   npx @google/clasp login
+   deno run -A --no-lock npm:@google/clasp@3 login
    ```
 
 2. Prepare a container-bound script attached to the target spreadsheet, then
