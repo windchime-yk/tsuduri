@@ -1,6 +1,6 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
-import { Utf8TextEncoder } from "./polyfill.ts";
+import { installUtf8TextEncoder, Utf8TextEncoder } from "./polyfill.ts";
 
 /** ポリフィルと標準のTextEncoderの出力を比較する */
 const expectSameBytes = (input: string) => {
@@ -47,6 +47,19 @@ describe("TextEncoderのポリフィル", () => {
     ) {
       expectSameBytes(input);
     }
+  });
+
+  it("TextEncoderがない環境には導入する", () => {
+    const scope: Record<string, unknown> = {};
+    expect(installUtf8TextEncoder(scope)).toBe(true);
+    expect(scope.TextEncoder).toBe(Utf8TextEncoder);
+  });
+
+  it("TextEncoderがある環境では上書きしない", () => {
+    const existing = class {};
+    const scope: Record<string, unknown> = { TextEncoder: existing };
+    expect(installUtf8TextEncoder(scope)).toBe(false);
+    expect(scope.TextEncoder).toBe(existing);
   });
 
   it("コードポイントを網羅的に走査しても標準実装と一致する", () => {

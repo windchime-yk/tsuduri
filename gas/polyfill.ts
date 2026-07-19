@@ -56,8 +56,21 @@ export class Utf8TextEncoder {
   }
 }
 
-// GASにはTextEncoderが存在しないため、未定義の環境でのみ補う
-if (typeof TextEncoder === "undefined") {
-  (globalThis as unknown as Record<string, unknown>).TextEncoder =
-    Utf8TextEncoder;
-}
+/**
+ * TextEncoderを持たない環境にのみポリフィルを導入する
+ * @param scope 導入先のグローバルスコープ
+ * @returns 導入した場合はtrue、既にTextEncoderが存在した場合はfalse
+ */
+export const installUtf8TextEncoder = (
+  scope: Record<string, unknown> = globalThis as unknown as Record<
+    string,
+    unknown
+  >,
+): boolean => {
+  if (typeof scope.TextEncoder !== "undefined") return false;
+  scope.TextEncoder = Utf8TextEncoder;
+  return true;
+};
+
+// GASにはTextEncoderが存在しないため、読み込み時に補う
+installUtf8TextEncoder();
