@@ -42,7 +42,14 @@ export const run = async (
         throw isValidFileExtentionResult.error;
       }
 
-      const OUTPUT_FILE_PREFIX = dirEntry.name.split(".").at(0)!;
+      const OUTPUT_FILE_PREFIX = dirEntry.name.split(".").at(0);
+
+      if (!OUTPUT_FILE_PREFIX) {
+        throw new CliError(
+          `「${dirEntry.path}」は出力ファイル名を決められないため処理できません。ドットから始まらないファイル名にしてください`,
+        );
+      }
+
       const processedInputPath = processedInputPathByPrefix.get(
         OUTPUT_FILE_PREFIX,
       );

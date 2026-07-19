@@ -55,6 +55,17 @@ describe("CLI", () => {
     await Deno.remove(tempDir, { recursive: true });
   });
 
+  it("ドットから始まるファイル名でエラーになる", async () => {
+    const tempDir = await Deno.makeTempDir();
+    await Deno.copyFile(
+      join(rootDir, MOCK_DIR, "private.csv"),
+      join(tempDir, ".hidden.csv"),
+    );
+    await expect(run(["--dir", ".", "--google"], tempDir)).rejects
+      .toBeInstanceOf(CliError);
+    await Deno.remove(tempDir, { recursive: true });
+  });
+
   it("拡張子違いの同名ファイルがあるとエラーになる", async () => {
     const tempDir = await Deno.makeTempDir();
     await Deno.copyFile(
