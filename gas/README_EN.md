@@ -71,8 +71,12 @@ Run "ユーザー辞書ファイルを生成" from the "Tsuduri" menu. It builds
 IMEs, and shows a download button in a dialog. Clicking it downloads the file
 straight to your browser.
 
-The active sheet (tab) is the target, and its name is used in the generated file
-names: a sheet named `example` produces `example-googleime.txt` and so on.
+Only the sheet (tab) selected when you run it is processed. Other tabs are never
+read, even if the spreadsheet has several. To generate dictionaries for another
+tab, switch to it and run the menu item again.
+
+The sheet name is used in the generated file names: a sheet named `example`
+produces `example-googleime.txt` and so on.
 
 ## Publishing the template
 
