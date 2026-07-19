@@ -28,6 +28,7 @@
     "jsr:@zip-js/zip-js@*": "2.8.17",
     "jsr:@zip-js/zip-js@^2.8.17": "2.8.17",
     "npm:@clack/prompts@0.7": "0.7.0",
+    "npm:@types/google-apps-script@^2.0.11": "2.0.11",
     "npm:encoding-japanese@^2.2.0": "2.2.0",
     "npm:zod@^3.24.1": "3.25.76"
   },
@@ -146,6 +147,9 @@
         "sisteransi"
       ]
     },
+    "@types/google-apps-script@2.0.11": {
+      "integrity": "sha512-D+UWQKXUd4KgScQ+iqqx4jYxZXmU7cYCWHlikmUckIfFvblTcG4d3tQsjJAA261wmFZOya+WWd8L6/0bvSLjHQ=="
+    },
     "encoding-japanese@2.2.0": {
       "integrity": "sha512-EuJWwlHPZ1LbADuKTClvHtwbaFn4rOD+dRAbWysqEOXRc2Uui0hJInNJrsdH0c+OhJA4nrCBdSkW4DD5YxAo6A=="
     },
@@ -181,6 +185,11 @@
           "jsr:@whyk/utils@^1.7.1",
           "jsr:@zip-js/zip-js@^2.8.17",
           "npm:zod@^3.24.1"
+        ]
+      },
+      "gas": {
+        "dependencies": [
+          "npm:@types/google-apps-script@^2.0.11"
         ]
       }
     }

@@ -18,25 +18,35 @@ jobs:
         run: deno lint
       - name: Format Check
         run: deno fmt --check
-      - name: Doc Lint (core)
-        run: deno doc --lint core/mod.ts
-      - name: Doc Lint (cli)
-        run: deno doc --lint cli/mod.ts
+  package:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          # publish: JSRに公開するパッケージのみtrue（doc lintとpublish dry-runの対象）
+          - package: core
+            publish: true
+          - package: cli
+            publish: true
+          - package: gas
+            publish: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Doc Lint
+        if: ${{ matrix.publish }}
+        run: deno doc --lint ${{ matrix.package }}/mod.ts
       - name: Test
-        run: deno task test
-      - name: Publish dry-run (core)
-        run: deno publish --dry-run --config core/deno.jsonc
-      - name: Publish dry-run (cli)
-        run: deno publish --dry-run --config cli/deno.jsonc
-      - name: Upload core coverage to Codecov
+        run: deno task --cwd ${{ matrix.package }} test
+      - name: Publish dry-run
+        if: ${{ matrix.publish }}
+        run: deno publish --dry-run --config ${{ matrix.package }}/deno.jsonc
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: core/coverage/lcov.info
-          flags: core
-      - name: Upload cli coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: cli/coverage/lcov.info
-          flags: cli
+          files: ${{ matrix.package }}/coverage/lcov.info
+          flags: ${{ matrix.package }}

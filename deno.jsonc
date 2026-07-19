@@ -5,9 +5,9 @@
     "@std/testing": "jsr:@std/testing@^1.0.0"
   },
   "tasks": {
-    "test": "deno task --cwd core test && deno task --cwd cli test",
+    "test": "deno task --cwd core test && deno task --cwd cli test && deno task --cwd gas test",
     "generate": "deno task --cwd core generate"
   },
-  "workspace": ["./core", "./cli"],
-  "exclude": ["README.md", "README_EN.md"]
+  "workspace": ["./core", "./cli", "./gas"],
+  "exclude": ["README.md", "README_EN.md", "gas/dist"]
 }
