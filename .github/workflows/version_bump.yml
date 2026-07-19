@@ -84,6 +84,7 @@ jobs:
 
             BUMPED_TAGS+=("${pkg}@${NEW_VERSION}")
             echo "${pkg}_bumped=true" >> "$GITHUB_OUTPUT"
+            echo "${pkg}_version=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
           done
 
           if [ ${#BUMPED_TAGS[@]} -eq 0 ]; then
@@ -143,29 +144,30 @@ jobs:
 
             # cli はプラットフォームごとのシングルバイナリをコンパイルしてリリースに添付する
             if [ "$pkg" = "cli" ]; then
-              TARGETS=(
-                "x86_64-unknown-linux-gnu"
-                "aarch64-unknown-linux-gnu"
-                "x86_64-apple-darwin"
-                "aarch64-apple-darwin"
-                "x86_64-pc-windows-msvc"
-              )
-
-              mkdir -p dist
-              for target in "${TARGETS[@]}"; do
-                ext=""
-                if [ "$target" = "x86_64-pc-windows-msvc" ]; then
-                  ext=".exe"
-                fi
-
-                deno compile \
-                  --allow-read \
-                  --allow-write \
-                  --target "$target" \
-                  --output "dist/tsuduri-${target}${ext}" \
-                  cli/mod.ts
-
-                gh release upload "$tag" "dist/tsuduri-${target}${ext}"
-              done
+              bash .github/scripts/upload_cli_binaries.sh "$tag"
             fi
           done
+
+      # core のみバンプされた場合、最新の cli リリースに添付済みのバイナリは古い core を
+      # 埋め込んだままになる。HEAD から再コンパイルしてアセットを差し替えることで、
+      # releases/latest/download/... の URL が常に最新 core を含むバイナリを配信するようにする
+      - name: Rebuild cli binaries with updated core
+        if: steps.bump.outputs.core_bumped == 'true' && steps.bump.outputs.cli_bumped != 'true'
+        env:
+          CORE_VERSION: ${{ steps.bump.outputs.core_version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LATEST_CLI_TAG=$(git tag -l "cli@*" | sort -V | tail -n1)
+          if [ -z "$LATEST_CLI_TAG" ]; then
+            echo "No cli release exists yet, nothing to replace."
+            exit 0
+          fi
+
+          bash .github/scripts/upload_cli_binaries.sh "$LATEST_CLI_TAG"
+
+          # 差し替え後のバイナリはタグ時点のソースと一致しなくなるため、
+          # トレーサビリティのためにリリースノートへ差し替えた旨を追記する
+          CURRENT_NOTES=$(gh release view "$LATEST_CLI_TAG" --json body --jq .body)
+          gh release edit "$LATEST_CLI_TAG" --notes "${CURRENT_NOTES}
+
+          Binaries rebuilt with core@${CORE_VERSION}."

@@ -32,6 +32,8 @@ export const run = async (
 
   if (!args.dir) throw new CliError("--dirでディレクトリを指定してください");
 
+  const processedInputPathByPrefix = new Map<string, string>();
+
   for await (const dirEntry of walk(join(cwd, args.dir))) {
     if (dirEntry.isFile) {
       const isValidFileExtentionResult = isValidFileExtention(dirEntry.name);
@@ -39,6 +41,26 @@ export const run = async (
       if (!isValidFileExtentionResult.success) {
         throw isValidFileExtentionResult.error;
       }
+
+      const OUTPUT_FILE_PREFIX = dirEntry.name.split(".").at(0);
+
+      if (!OUTPUT_FILE_PREFIX) {
+        throw new CliError(
+          `「${dirEntry.path}」は出力ファイル名を決められないため処理できません。ドットから始まらないファイル名にしてください`,
+        );
+      }
+
+      const processedInputPath = processedInputPathByPrefix.get(
+        OUTPUT_FILE_PREFIX,
+      );
+
+      if (processedInputPath) {
+        throw new CliError(
+          `出力先が重複するため処理を中断しました。「${processedInputPath}」と「${dirEntry.path}」はどちらも「${OUTPUT_FILE_PREFIX}」として出力されます。ファイル名が重複しないように変更してください`,
+        );
+      }
+
+      processedInputPathByPrefix.set(OUTPUT_FILE_PREFIX, dirEntry.path);
 
       let data: Record<string, string | undefined>[] = [];
 
@@ -72,7 +94,6 @@ export const run = async (
         }
       }
 
-      const OUTPUT_FILE_PREFIX = dirEntry.name.split(".").at(0)!;
       const OUTPUT_DIR_NAME = join(
         cwd,
         OUTPUT_BASE_DIR_NAME,
