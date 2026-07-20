@@ -12,7 +12,7 @@ export default jsxRenderer(({ children }) => {
         <title>Tsuduri - IMEユーザー辞書ジェネレーター</title>
         <meta
           name="description"
-          content="TsuduriはCSV/JSONの辞書データからGoogle日本語入力・macOS日本語IM・Microsoft IME・Gboard向けのユーザー辞書を一括生成するツールです。"
+          content="Tsuduriは、Googleスプレッドシートで管理している辞書データからGoogle日本語入力・macOS日本語IM・Microsoft IME・Gboard向けのユーザー辞書をボタンひとつで一括生成するツールです。CLIにも対応。"
         />
         <Style>
           {css`

@@ -1,10 +1,11 @@
 import { css } from "hono/css";
 import { createRoute } from "honox/factory";
-import DownloadCta from "../islands/download-cta.tsx";
 import { binaryDownloadUrl } from "../lib/releases.ts";
 
 const REPO_URL = "https://github.com/windchime-yk/tsuduri";
 const RELEASES_URL = `${REPO_URL}/releases`;
+const TEMPLATE_COPY_URL =
+  "https://docs.google.com/spreadsheets/d/1I2lEn7Df3eR4It2JvW2eUBNTeIDqphdmvFMvBd5xpd4/copy";
 
 const BINARY_TARGET_LIST = [
   { target: "aarch64-apple-darwin", label: "macOS (Apple Silicon)" },
@@ -43,6 +44,37 @@ const heroDescriptionClass = css`
   margin-top: 2rem;
   text-align: left;
   display: inline-block;
+`;
+
+const heroCtaClass = css`
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+`;
+
+const heroCtaButtonClass = css`
+  display: inline-block;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.85rem 2rem;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--color-accent-dark);
+  }
+`;
+
+const heroCtaSubClass = css`
+  font-size: 0.9rem;
+
+  & a {
+    color: var(--color-muted);
+  }
 `;
 
 const sectionClass = css`
@@ -122,6 +154,90 @@ const noteClass = css`
   color: var(--color-muted);
 `;
 
+const stepsClass = css`
+  list-style: none;
+  counter-reset: step;
+  display: grid;
+  gap: 1.25rem;
+
+  & li {
+    position: relative;
+    padding-left: 3rem;
+    counter-increment: step;
+  }
+
+  & li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.95rem;
+  }
+
+  & li strong {
+    display: block;
+    margin-bottom: 0.1rem;
+  }
+
+  & li span {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+  }
+`;
+
+const formatTableClass = css`
+  margin-top: 1.75rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+
+  & caption {
+    text-align: left;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  & th,
+  & td {
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+
+  & th {
+    background: var(--color-surface);
+    white-space: nowrap;
+  }
+
+  & code {
+    font-size: 0.9em;
+  }
+`;
+
+const subNoteClass = css`
+  margin-top: 1.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+`;
+
+const sectionLeadClass = css`
+  margin-bottom: 2rem;
+  color: var(--color-muted);
+`;
+
 const codeBlockClass = css`
   background: #2d2a26;
   color: #f5f2ec;
@@ -148,13 +264,18 @@ export default createRoute((c) => {
             ひとつの辞書データから、すべてのIMEユーザー辞書へ。
           </p>
           <p class={heroDescriptionClass}>
-            Tsuduri（つづり）は、CSVまたはJSONで管理している辞書データから、
-            各IME向けの日本語ユーザー辞書ファイルを一括生成するツールです。
+            Tsuduri（つづり）は、Googleスプレッドシートで管理している辞書データから、
+            各IME向けの日本語ユーザー辞書ファイルをボタンひとつで一括生成できるツールです。
+            インストールは不要。テンプレートをコピーするだけで使えます。
           </p>
-          <DownloadCta
-            targets={BINARY_TARGET_LIST}
-            fallbackUrl={RELEASES_URL}
-          />
+          <div class={heroCtaClass}>
+            <a class={heroCtaButtonClass} href={TEMPLATE_COPY_URL}>
+              スプレッドシートテンプレートをコピー
+            </a>
+            <span class={heroCtaSubClass}>
+              <a href="#cli">コマンドライン（CLI）で使いたい方はこちら</a>
+            </span>
+          </div>
         </div>
       </header>
 
@@ -171,10 +292,111 @@ export default createRoute((c) => {
           </div>
         </section>
 
-        <section id="download" class={sectionClass}>
+        <section class={sectionClass}>
           <div class={wrapperClass}>
-            <h2>ダウンロード</h2>
-            <div class={downloadGridClass}>
+            <h2>スプレッドシートで使う</h2>
+            <p class={sectionLeadClass}>
+              Googleスプレッドシートで辞書を管理すれば、インストールやコマンド操作は一切不要。
+              メニューのボタンひとつで、全対応IMEのユーザー辞書をまとめて生成できます。
+            </p>
+            <ol class={stepsClass}>
+              <li>
+                <strong>テンプレートをコピーする</strong>
+                <span>
+                  下のボタンからテンプレートを開き、「コピーを作成」で自分のGoogle
+                  Driveに保存します。
+                </span>
+              </li>
+              <li>
+                <strong>辞書データを入力する</strong>
+                <span>
+                  シートに登録したい単語を追記します。列の形式はテンプレートにあらかじめ用意されています。
+                </span>
+              </li>
+              <li>
+                <strong>メニューから生成する</strong>
+                <span>
+                  スプレッドシート上部のメニュー「Tsuduri」→「ユーザー辞書ファイルを生成」を実行します。
+                </span>
+              </li>
+              <li>
+                <strong>zipをダウンロードする</strong>
+                <span>
+                  全対応IMEのユーザー辞書をまとめた<code>tsuduri_output.zip</code>
+                  が作られ、そのままダウンロードできます。
+                </span>
+              </li>
+            </ol>
+
+            <div class={heroCtaClass}>
+              <a class={heroCtaButtonClass} href={TEMPLATE_COPY_URL}>
+                スプレッドシートテンプレートをコピー
+              </a>
+            </div>
+
+            <table class={formatTableClass}>
+              <caption>スプレッドシートの列（1行目をヘッダー行にします）</caption>
+              <thead>
+                <tr>
+                  <th>列名</th>
+                  <th>説明</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <code>type</code>
+                  </td>
+                  <td>品詞</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>word</code>
+                  </td>
+                  <td>対象文言</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>reading</code>
+                  </td>
+                  <td>読み方</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>isSuppress</code>
+                  </td>
+                  <td>抑制単語かどうか（YES / NO）</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>isSuggest</code>
+                  </td>
+                  <td>サジェストのみに表示するか（YES / NO）</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>description</code>
+                  </td>
+                  <td>対象文言についての説明</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p class={subNoteClass}>
+              生成したファイルはGoogle
+              Driveには保存されません。スクリプトが要求するのはスプレッドシートの読み取りとダイアログ表示だけで、Driveへのアクセス権限は求めません。
+            </p>
+          </div>
+        </section>
+
+        <section id="cli" class={sectionClass}>
+          <div class={wrapperClass}>
+            <h2>CLIで使う</h2>
+            <p class={sectionLeadClass}>
+              コマンドラインで一括生成したい方や、CSV /
+              JSONで辞書を管理している方向けです。お使いの環境の実行ファイルをダウンロードするか、Denoからインストールしてください。
+            </p>
+            <div id="download" class={downloadGridClass}>
               <div class={downloadCardClass}>
                 <h3>Excelテンプレート</h3>
                 <p>
@@ -220,12 +442,10 @@ export default createRoute((c) => {
                 </p>
               </div>
             </div>
-          </div>
-        </section>
 
-        <section class={sectionClass}>
-          <div class={wrapperClass}>
-            <h2>Denoで使う</h2>
+            <h3 class={css`margin-top: 2.5rem; margin-bottom: 0.75rem;`}>
+              Denoで使う
+            </h3>
             <p>
               Denoをお使いの場合は、<a href="https://jsr.io/@tsuduri/cli">
                 JSR
