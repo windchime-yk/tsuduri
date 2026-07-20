@@ -99,7 +99,7 @@ const sectionClass = css`
 const imeListClass = css`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.75rem;
   list-style: none;
 
