@@ -1,14 +1,20 @@
 {
   "name": "@tsuduri/core",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "tasks": {
-    "test": "deno test -R --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/core/' coverage",
+    // -Wはbuild.test.tsが一時ディレクトリへ辞書ファイルを書き出すために必要
+    "test": "deno test -RW --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/core/' coverage",
     // generate 専用依存が deno.lock 経由でシングルバイナリに埋め込まれないよう、imports に載せず --no-lock で直接実行する
     "generate": "deno run --no-lock -RWE npm:typescript-json-schema@0.67.1 --required model.ts Schema -o schema.json"
   },
-  "exports": "./mod.ts",
+  "exports": {
+    ".": "./mod.ts",
+    // GASなどファイルシステムやWeb Streams APIを持たない環境向けのエントリポイント
+    "./portable": "./portable.ts"
+  },
   "imports": {
-    "@std/csv": "jsr:@std/csv@^1.0.5",
+    // バレルエントリはGASが解釈できないプライベートフィールド構文を含むストリーム系モジュールを巻き込むため、parseだけを直接読み込む
+    "@std/csv/parse": "jsr:@std/csv@^1.0.5/parse",
     "@std/path": "jsr:@std/path@^1.0.8",
     "@whyk/utils": "jsr:@whyk/utils@^1.7.1",
     "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.8.17",

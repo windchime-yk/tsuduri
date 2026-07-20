@@ -5,11 +5,11 @@
     "@std/testing": "jsr:@std/testing@^1.0.0"
   },
   "tasks": {
-    "test": "deno task --cwd core test && deno task --cwd cli test && deno task --cwd lp test",
+    "test": "deno task --cwd core test && deno task --cwd cli test && deno task --cwd gas test && deno task --cwd lp test",
     "generate": "deno task --cwd core generate"
   },
-  "workspace": ["./core", "./cli", "./lp"],
+  "workspace": ["./core", "./cli", "./gas", "./lp"],
   // lp(HonoX/Vite)のnpm依存をnode_modulesへ展開するために必要
   "nodeModulesDir": "auto",
-  "exclude": ["README.md", "README_EN.md", "lp/dist"]
+  "exclude": ["README.md", "README_EN.md", "gas/dist", "lp/dist"]
 }

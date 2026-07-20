@@ -4,3 +4,5 @@
 /tsuduri_output_archive.zip
 node_modules/
 /lp/dist/
+/gas/dist/
+/gas/.clasp.json
