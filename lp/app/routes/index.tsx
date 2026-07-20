@@ -15,6 +15,14 @@ const BINARY_TARGET_LIST = [
   { target: "x86_64-pc-windows-msvc", label: "Windows (x86_64)" },
 ];
 
+const IME_LIST = [
+  { name: "Google日本語入力" },
+  { name: "macOS日本語入力プログラム" },
+  { name: "Microsoft IME" },
+  { name: "Gboard" },
+  { name: "ATOK", note: "Microsoft IME形式で対応" },
+];
+
 const wrapperClass = css`
   max-width: 52rem;
   margin: 0 auto;
@@ -89,17 +97,29 @@ const sectionClass = css`
 `;
 
 const imeListClass = css`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.75rem;
   list-style: none;
 
   & li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    min-width: 8rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1.25rem;
     text-align: center;
+  }
+
+  & li .ime-note {
+    font-size: 0.8rem;
+    color: var(--color-muted);
   }
 `;
 
@@ -285,10 +305,12 @@ export default createRoute((c) => {
           <div class={wrapperClass}>
             <h2>対応IME</h2>
             <ul class={imeListClass}>
-              <li>Google 日本語入力</li>
-              <li>macOS 日本語IM</li>
-              <li>Microsoft IME</li>
-              <li>Gboard</li>
+              {IME_LIST.map((ime) => (
+                <li>
+                  {ime.name}
+                  {ime.note ? <span class="ime-note">{ime.note}</span> : null}
+                </li>
+              ))}
             </ul>
           </div>
         </section>
