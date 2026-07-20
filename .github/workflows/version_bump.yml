@@ -136,10 +136,18 @@ jobs:
             git tag "$tag"
             git push origin "$tag"
 
-            if [ -n "$PREV_TAG" ]; then
-              gh release create "$tag" --title "$tag" --generate-notes --notes-start-tag "$PREV_TAG"
+            # releases/latest/download/... の直リンクが常にシングルバイナリつきの
+            # cliリリースを指すよう、cli以外はlatestの対象から外す
+            if [ "$pkg" = "cli" ]; then
+              LATEST_FLAG="--latest"
             else
-              gh release create "$tag" --title "$tag" --generate-notes
+              LATEST_FLAG="--latest=false"
+            fi
+
+            if [ -n "$PREV_TAG" ]; then
+              gh release create "$tag" --title "$tag" "$LATEST_FLAG" --generate-notes --notes-start-tag "$PREV_TAG"
+            else
+              gh release create "$tag" --title "$tag" "$LATEST_FLAG" --generate-notes
             fi
 
             # cli はプラットフォームごとのシングルバイナリをコンパイルしてリリースに添付する

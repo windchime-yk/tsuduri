@@ -30,12 +30,17 @@ jobs:
             publish: true
           - package: gas
             publish: false
+          - package: lp
+            publish: false
     steps:
       - uses: actions/checkout@v4
       - name: Setup Deno
         uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
+      # lpのnpm依存(vite/honox)をnode_modulesへ展開する
+      - name: Install dependencies
+        run: deno install
       - name: Doc Lint
         if: ${{ matrix.publish }}
         run: deno doc --lint ${{ matrix.package }}/mod.ts
