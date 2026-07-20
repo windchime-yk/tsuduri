@@ -322,7 +322,9 @@ export default createRoute((c) => {
               <li>
                 <strong>zipをダウンロードする</strong>
                 <span>
-                  全対応IMEのユーザー辞書をまとめた<code>tsuduri_output.zip</code>
+                  全対応IMEのユーザー辞書をまとめた<code>
+                    tsuduri_output.zip
+                  </code>
                   が作られ、そのままダウンロードできます。
                 </span>
               </li>
@@ -335,7 +337,9 @@ export default createRoute((c) => {
             </div>
 
             <table class={formatTableClass}>
-              <caption>スプレッドシートの列（1行目をヘッダー行にします）</caption>
+              <caption>
+                スプレッドシートの列（1行目をヘッダー行にします）
+              </caption>
               <thead>
                 <tr>
                   <th>列名</th>
@@ -443,7 +447,12 @@ export default createRoute((c) => {
               </div>
             </div>
 
-            <h3 class={css`margin-top: 2.5rem; margin-bottom: 0.75rem;`}>
+            <h3
+              class={css`
+                margin-top: 2.5rem;
+                margin-bottom: 0.75rem;
+              `}
+            >
               Denoで使う
             </h3>
             <p>
