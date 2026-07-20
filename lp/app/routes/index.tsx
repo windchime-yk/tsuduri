@@ -27,7 +27,8 @@ const heroClass = css`
   border-bottom: 1px solid var(--color-border);
 
   & h1 {
-    font-size: 3rem;
+    /* letter-spacing込みで"Tsuduri"が狭幅ビューポートを超えないようclampで縮める */
+    font-size: clamp(2rem, 9vw, 3rem);
     letter-spacing: 0.35em;
     text-indent: 0.35em;
     font-weight: 600;
