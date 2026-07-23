@@ -5,7 +5,7 @@
     // -Wはbuild.test.tsが一時ディレクトリへ辞書ファイルを書き出すために必要
     "test": "deno test -RW --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info --include='file:.+/core/' coverage",
     // generate 専用依存が deno.lock 経由でシングルバイナリに埋め込まれないよう、imports に載せず --no-lock で直接実行する
-    "generate": "deno run --no-lock -RWE npm:typescript-json-schema@0.67.1 --required model.ts Schema -o schema.json"
+    "generate": "deno run --no-lock -RWE npm:typescript-json-schema@0.67.4 --required model.ts Schema -o schema.json"
   },
   "exports": {
     ".": "./mod.ts",
